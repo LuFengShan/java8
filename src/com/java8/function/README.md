@@ -1,6 +1,6 @@
-# java8 例子，学习，记录
+# java.util.function中的主要的功能接口
 
-`java.util.function包`中的主要功能接口
+`java.util.function包`中的主要功能接口列表
 
 | 功能接口名称   | 返回类型            | 功能接口说明                    |
 | -------------- | ------------------- | ------------------------------- |
@@ -13,3 +13,4 @@
 | BiPredicate    | BiPredicate<T, U>   | 接收T对象和U对象，返回boolean   |
 | BiFunction     | BiFunction<T, U, R> | 接收T对象和U对象，返回R对象     |
 | BinaryOperator | BinaryOperator< T > | 接收两个T对象，返回T对象        |
+
