@@ -22,7 +22,7 @@ public class TestClientSocket {
       // 这里是使用输出流OutputStream向服务器端输出信息
       OutputStream outputStream = socket.getOutputStream();
       DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
-      dataOutputStream.writeUTF("孙光旭，你好 : " + (i + 1));
+      dataOutputStream.writeUTF("sgx，你好 : " + (i + 1));
       Thread.sleep(5000);
     }
   }

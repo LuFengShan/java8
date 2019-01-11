@@ -1,5 +1,7 @@
 package com.java8.function;
 
+import java.util.StringJoiner;
+
 /**
  * 开发者 : SGX <BR>
  * 时间：2018年6月26日 上午8:47:48 <BR>
@@ -9,38 +11,40 @@ package com.java8.function;
  * 版本：V1.0
  */
 public class Person {
-  String firstName;
-  String lastName;
+	String firstName;
+	String lastName;
 
 
-  public String getFirstName() {
-    return firstName;
-  }
+	public String getFirstName() {
+		return firstName;
+	}
 
-  public void setFirstName(String firstName) {
-    this.firstName = firstName;
-  }
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
 
-  public String getLastName() {
-    return lastName;
-  }
+	public String getLastName() {
+		return lastName;
+	}
 
-  public void setLastName(String lastName) {
-    this.lastName = lastName;
-  }
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
 
-  Person() {}
+	Person() {
+	}
 
-  Person(String firstName, String lastName) {
-    this.firstName = firstName;
-    this.lastName = lastName;
-  }
+	public Person(String firstName, String lastName) {
+		this.firstName = firstName;
+		this.lastName = lastName;
+	}
 
-  @Override
-  public String toString() {
-    return lastName + firstName;
-  }
-
-
+	@Override
+	public String toString() {
+		return new StringJoiner(", ", Person.class.getSimpleName() + "[", "]")
+				.add("firstName='" + firstName + "'")
+				.add("lastName='" + lastName + "'")
+				.toString();
+	}
 }
 
