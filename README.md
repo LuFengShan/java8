@@ -1,4 +1,5 @@
 # java8 例子，学习，记录
+> 部分测试引入JUnit5,请使用前引入
 
 `java.util.function包`中的主要功能接口
 
