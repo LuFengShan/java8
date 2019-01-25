@@ -30,6 +30,7 @@ public class Lambda01 {
     list.stream().forEach(System.out::println);
 
     list.sort((a, b) -> a.compareTo(b));
+    list.sort(Comparator.naturalOrder());
   }
 
 }

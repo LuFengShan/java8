@@ -25,7 +25,7 @@ public class ThreadDemo {
 		// 2. 调用实现1
 		task.run();
 
-		// 3. 首先，我们在开始一个新线程之前直接在主线程上执行runnable。
+		// 3. 首先，我们在开始一个新线程之前直接在进行上执行runnable。
 		Thread thread = new Thread(task);
 		thread.start();
 
