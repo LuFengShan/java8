@@ -1,7 +1,5 @@
 package com.java8.concurrent;
 
-import jdk.nashorn.internal.codegen.CompilerConstants;
-
 import java.util.concurrent.*;
 
 /**
