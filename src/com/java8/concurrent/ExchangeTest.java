@@ -2,22 +2,26 @@ package com.java8.concurrent;
 
 import java.util.concurrent.Exchanger;
 
+/**
+ * {@link Exchanger#exchange(Object)}:用于两个线程间的交换对象，Exchange只是等待两个线程，直到两个线程都调用exchange()方法的时候，
+ * 两个线程配对并且交换对象
+ */
 public class ExchangeTest {
     public static void main(String[] args) {
         Exchanger exchanger = new Exchanger();
-        new Thread(new Producer(exchanger)).start();
-        new Thread(new ConsumerExchangeTest(exchanger)).start();
+        new Thread(new HeiNan(exchanger)).start();
+        new Thread(new HeiBei(exchanger)).start();
     }
 }
 
 /**
  * 河南
  */
-class Producer implements Runnable {
+class HeiNan implements Runnable {
 
     Exchanger ex;
 
-    Producer(Exchanger ex) {
+    HeiNan(Exchanger ex) {
         this.ex = ex;
 
     }
@@ -34,7 +38,7 @@ class Producer implements Runnable {
             try {
                 // exchanging with an dummy Country object
                 Country exchange = (Country) ex.exchange(country);
-                System.out.println("从Consumer线程获得country对象: " + exchange.getCountryName());
+                System.out.println("从HeNan线程中交换country对象: " + exchange.getCountryName());
             } catch (InterruptedException e) {
                 System.out.println(e);
             }
@@ -45,11 +49,11 @@ class Producer implements Runnable {
 /**
  * 河北
  */
-class ConsumerExchangeTest implements Runnable {
+class HeiBei implements Runnable {
 
     Exchanger ex;
 
-    ConsumerExchangeTest(Exchanger ex) {
+    HeiBei(Exchanger ex) {
         this.ex = ex;
     }
 
@@ -63,7 +67,7 @@ class ConsumerExchangeTest implements Runnable {
                 country = new Country("河北*城B");
             try {
                 Country exchange = (Country) ex.exchange(country);
-                System.out.println("从Producer线程获得country对象: " + exchange.getCountryName());
+                System.out.println("从HeBei线程中交换country对象: " + exchange.getCountryName());
             } catch (InterruptedException e) {
                 System.out.println(e);
             }
