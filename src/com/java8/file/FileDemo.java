@@ -6,14 +6,16 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.net.URI;
-import java.nio.file.FileVisitOption;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.BiPredicate;
 import java.util.stream.Stream;
 
+/**
+ * 用Java列出目录中的文件
+ */
 public class FileDemo {
 
 	/**
@@ -40,6 +42,27 @@ public class FileDemo {
 			e.printStackTrace();
 		}
 
+	}
+
+	/**
+	 * Java 7引入了一个更快的替代方案列出目录中的文件
+	 * {@link DirectoryStream}
+	 * @return
+	 * @throws IOException
+	 */
+	@Test
+	public void listFilesUsingDirectoryStream() throws IOException {
+		String dir = "C:/";
+		Set<String> fileList = new HashSet<>();
+		try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(dir))) {
+			for (Path path : stream) {
+				if (Files.isDirectory(path)) { // 判断这个文件是不是一个文件包
+					fileList.add(path.getFileName()
+							.toString());
+				}
+			}
+		}
+		fileList.forEach(System.out::println);
 	}
 
 	/**
