@@ -6,40 +6,53 @@ import org.junit.platform.commons.logging.LoggerFactory;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class OptionalTest {
     private Logger log = LoggerFactory.getLogger(OptionalTest.class);
 
-    public static void main(String[] args) {
-//    Optional<String> optional = Optional.of("bam");
-//
-//    optional.isPresent(); // true
-//    optional.get(); // "bam"
-//    optional.orElse("fallback"); // "bam"
-//
-//    optional.ifPresent((s) -> System.out.println(s.charAt(0))); // "b"
-//
-//    Optional<Integer> optional2 = Optional.of(255);
-//    System.out.println(optional2.isPresent());
-//    System.out.println(optional2.orElse(200));
-//    System.out.println(optional2.get());
+    @Test
+    public void optionalTest() {
+        Optional<String> optional = Optional.of("bam");
 
-        /**
-         * Optional<Person> empty = Optional.empty();
-         * System.out.println(empty.get()); // java.util.NoSuchElementException: No value present
-         */
+        optional.isPresent(); // true
+        optional.get(); // "bam"
+        optional.orElse("fallback"); // "bam"
 
+        optional.ifPresent((s) -> System.out.println(s.charAt(0))); // "b"
+
+        Optional<Integer> optional2 = Optional.of(255);
+        System.out.println(optional2.isPresent());
+        System.out.println(optional2.orElse(200));
+        System.out.println(optional2.get());
+
+    }
+
+    @Test
+    public void optionalEmpty() {
+        Optional<Person> empty = Optional.empty();
+        System.out.println(empty.get()); // java.util.NoSuchElementException: No value present
+    }
+
+    /**
+     * {@link Optional#of(Object)} 和 {@link Optional#ofNullable(Object)}方法创建包含值的 Optional。
+     * 两个方法的不同之处在于如果你把 null 值作为参数传递进去，of() 方法会抛出 NullPointerException：
+     * <pre>
+     *  Optional<Person> person1 = Optional.of(nullPerson);
+     *  System.out.println(person1.get()); // java.lang.NullPointerException
+     * </pre>
+     * <p>
+     * 如果要检查Optional中的对象不是不null，有{@link Optional#isPresent()}和{@link Optional#ifPresent(Consumer)},这两个
+     * 方法的不同之处是<b>isPresent</b>只是检查是不是null,
+     * <b>ifPresent</b>除了执行检查，还接受一个Consumer(消费者) 参数，如果对象不是空的，就对执行传入的 Lambda 表达式
+     * </p>
+     */
+    @Test
+    public void optionalOf() {
         Person nullPerson = null;
         Person lisa = new Person("sa", "li");
-        /**
-         * of() 和 ofNullable() 方法创建包含值的 Optional。
-         * 两个方法的不同之处在于如果你把 null 值作为参数传递进去，of() 方法会抛出 NullPointerException：
-         * <code>
-         *  Optional<Person> person1 = Optional.of(nullPerson);
-         *  System.out.println(person1.get()); // java.lang.NullPointerException
-         * </code>
-         */
+
         // 明确对象不为 null  的时候使用 of()
         Optional<Person> lisaPerson = Optional.of(lisa);
         System.out.println(lisaPerson.get());
@@ -52,7 +65,6 @@ public class OptionalTest {
         // 还接受一个Consumer(消费者) 参数，如果对象不是空的，就对执行传入的 Lambda 表达式：
         nullPerson1.ifPresent(u -> System.out.println(u.toString())); // 对象为空了，所以不执行lambad
         lisaPerson.ifPresent(u -> System.out.println(u.toString())); // 对象不为空了，执行lambad
-
 
     }
 
