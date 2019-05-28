@@ -9,6 +9,13 @@ public class Lambda01 {
 
   public static void main(String[] args) {
     List<String> list = Arrays.asList("lili", "nana", "zeze", "dandan", "pangpang", "lala");
+    String l = list.stream()
+            .filter(s -> s.startsWith("l"))
+            .findFirst()
+            .get();
+    System.out.println(l);
+
+
     list.stream().filter(s -> s.startsWith("n")).forEach(System.out::println);
 
     // 老的写法
