@@ -1,10 +1,12 @@
 package com.java8.collection;
 
+import com.alibaba.fastjson.JSON;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalTime;
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class Java8Collection {
@@ -20,10 +22,12 @@ public class Java8Collection {
 						new Person("石头", "孙", 55),
 						new Person("老二", "张", 28),
 						new Person("汪", "王", 33),
+						new Person("汪", "王", 38),
 						new Person("光明", "孙", 22),
 						new Person("丘吉尔", "孙", 20),
 						new Person("权", "孙", 20),
-						new Person("力", "王", 35));
+						new Person("力", "王", 35)
+				);
 	}
 
 	/**
@@ -100,7 +104,65 @@ public class Java8Collection {
 						)
 				);
 		collect8.entrySet().forEach(System.out::println);
+	}
 
+	@Test
+	public void testGroupByLimit() {
+		List<RunNameMonth> list = new ArrayList<>(2000000);
+		for (int i = 1; i < 2000001; i++) {
+			if (i < 200000) {
+				list.add(new RunNameMonth("2018-01", "比亚迪汽车有限公司1", i * 2.00));
+			} else if (i < 400000) {
+				list.add(new RunNameMonth("2018-02", "比亚迪汽车有限公司2", i * 3.00));
+			} else if (i < 600000) {
+				list.add(new RunNameMonth("2018-03", "比亚迪汽车有限公司3", i * 4.00));
+			} else if (i < 800000) {
+				list.add(new RunNameMonth("2018-04", "比亚迪汽车有限公司4", i * 5.00));
+			} else if (i < 1000000) {
+				list.add(new RunNameMonth("2018-05", "比亚迪汽车有限公司5", i * 6.00));
+			} else if (i < 1200000) {
+				list.add(new RunNameMonth("2018-06", "比亚迪汽车有限公司6", i * 7.00));
+			} else if (i < 1500000) {
+				list.add(new RunNameMonth("2018-07", "比亚迪汽车有限公司7", i * 8.00));
+			} else if (i < 200000) {
+				list.add(new RunNameMonth("2018-08", "比亚迪汽车有限公司8", i * 9.00));
+			} else {
+				list.add(new RunNameMonth("2018-09", "比亚迪汽车有限公司9", i * 9.50));
+			}
+		}
+
+		list.parallelStream()
+				.sorted(Comparator.comparingDouble(RunNameMonth::getRunKm).reversed())
+				.collect(Collectors.groupingBy(RunNameMonth::getYearMonth,// 首先根据月份分组
+						Collectors.groupingBy(RunNameMonth::getUnName, // 再次根据单位分组
+								Collectors.summingDouble(RunNameMonth::getRunKm) // 根据月份和单位分组，然后取出里程和
+						))
+				)
+				.entrySet()
+				.stream()
+				.map(entry ->
+						{
+							List<RunNameMonth> list1 = new ArrayList<>();
+							entry.getValue()
+									.entrySet()
+									.stream()
+									.forEach(e2 -> list1.add(new RunNameMonth(entry.getKey(), e2.getKey(), e2.getValue())));
+							return list1;
+						}
+				)
+				.forEach(System.out::println);
+
+//		people.parallelStream()
+//				.sorted(Comparator.comparingInt(Person::getAge).reversed())
+//				.collect(Collectors.groupingBy(Person::getLastName))
+//				.entrySet()
+//				.stream()
+//				.flatMap(kv -> kv.getValue()
+//						.stream()
+//						.limit(2)
+//				)
+//				.collect(Collectors.toList())
+//				.forEach(System.out::println);
 	}
 
 	/**
@@ -150,6 +212,125 @@ public class Java8Collection {
 				.filter(person -> person.getLastName().startsWith("张2"))
 				.collect(Collectors.counting());
 		System.out.println(LocalTime.now() + " : " + collect);
+	}
+
+	@Test
+	public void test01() {
+		List<OfflineVehicle> list = new ArrayList<>();
+		Supplier<OfflineVehicle> supplier = OfflineVehicle::new;
+		OfflineVehicle ov = supplier.get();
+		ov.setVin("LHB14T3E2GR134804");
+		ov.setLicensePlate("测AD589C");
+		ov.setTypeName("测试类型一");
+		ov.setVehModelName("BJ5022XXYV3R2-BEV");
+		ov.setUnName("北京汽车股份有限公司");
+		list.add(ov);
+
+		ov = supplier.get();
+		ov.setVin("LHB15T3E0JG400661");
+		ov.setLicensePlate("测BD589C");
+		ov.setTypeName("测试类型二");
+		ov.setVehModelName("BJ5030XXYVRRC-BEV");
+		ov.setUnName("北汽新能源汽车常州有限公司");
+		list.add(ov);
+		ov = supplier.get();
+		ov.setVin("LKCBANA20HC044583");
+		ov.setLicensePlate("测BD579C");
+		ov.setTypeName("测试类型二");
+		ov.setVehModelName("CH5015XXYBEVA2CD");
+		ov.setUnName("江西昌河汽车有限责任公司");
+		list.add(ov);
+		ov = supplier.get();
+		ov.setVin("LHB14T3E2GR141431");
+		ov.setLicensePlate("测BD679C");
+		ov.setTypeName("测试类型三");
+		ov.setVehModelName("BJ5022XXYV3R2-BEV");
+		ov.setUnName("北京汽车股份有限公司");
+		list.add(ov);
+		ov = supplier.get();
+		ov.setVin("L6T78Y4W9HN052280");
+		ov.setLicensePlate("测BBD679");
+		ov.setTypeName("测试类型四");
+		ov.setVehModelName("MR7002BEV03");
+		ov.setUnName("浙江吉利汽车有限公司");
+		list.add(ov);
+
+		List<OfflineVehicle> offlineVehicles = list;
+
+		// 1. 返回所有的车牌号
+		List<String> licensePlateCollect = offlineVehicles.parallelStream()
+				.map(OfflineVehicle::getLicensePlate) // 映射出所有的车牌号
+				.distinct()
+				.sorted()
+				.collect(Collectors.toList());
+
+		// 2. 返回所有的车辆类别
+		List<String> typeNameCollect = offlineVehicles.parallelStream()
+				.map(OfflineVehicle::getTypeName) // 映射出所有的车牌号
+				.distinct()
+				.sorted()
+				.collect(Collectors.toList());
+
+		// 3. 返回所有的车辆型号
+		List<String> vehModelNameCollect = offlineVehicles.parallelStream()
+				.map(OfflineVehicle::getVehModelName) // 映射出所有的车牌号
+				.distinct()
+				.sorted()
+				.collect(Collectors.toList());
+
+		// 4. 返回所有的车辆生产企业
+		List<String> unNameCollect = offlineVehicles.parallelStream()
+				.map(OfflineVehicle::getUnName) // 映射出所有的车牌号
+				.distinct()
+				.sorted()
+				.collect(Collectors.toList());
+
+		// 5. 返回所有的车辆运营单位
+		List<String> unitNameCollect = offlineVehicles.parallelStream()
+				.map(OfflineVehicle::getUnitName) // 映射出所有的车牌号
+				.distinct()
+				.sorted()
+				.collect(Collectors.toList());
+
+		Map<String, List<String>> map = new HashMap<>();
+		map.put("licensePlateCollect", licensePlateCollect);
+		map.put("typeNameCollect", typeNameCollect);
+		map.put("vehModelNameCollect", vehModelNameCollect);
+		map.put("unNameCollect", unNameCollect);
+		map.put("unitNameCollect", unitNameCollect);
+
+		String string = JSON.toJSONString(map);
+		System.out.println(string);
+
+		String licensePlate = "BD";
+		String typeName = "型二";
+		String vehModelName = "";
+		String unName = "";
+		String unitName = "";
+
+		List<OfflineVehicle> collect = offlineVehicles.parallelStream()
+				// 过滤 车牌号
+				.filter(offlineVehicle -> {
+					if (!Objects.equals("", licensePlate) && !offlineVehicle.getLicensePlate().contains(licensePlate)) {
+						return false;
+					}
+					if (!Objects.equals("", typeName) && !offlineVehicle.getTypeName().contains(typeName)) {
+						return false;
+					}
+					if (!Objects.equals("", vehModelName) && !offlineVehicle.getVehModelName().contains(vehModelName)) {
+						return false;
+					}
+					if (!Objects.equals("", unName) && !offlineVehicle.getUnName().contains(unName)) {
+						return false;
+					}
+					if (!Objects.equals("", unitName) && !offlineVehicle.getUnitName().contains(unitName)) {
+						return false;
+					}
+					return true;
+				})
+				.collect(Collectors.toList());
+		System.out.println(JSON.toJSONString(collect));
+
 	}
 }
 
