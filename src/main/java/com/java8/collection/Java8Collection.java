@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalTime;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -69,12 +70,12 @@ public class Java8Collection {
 				);
 		// collect3.entrySet().forEach(System.out::println);
 
-		// 5.根据lastName分组，取出各组中的平均年龄
+		// 5.根据lastName分组，取出各组中的年龄和
 		Map<String, Integer> collect4 = people.stream()
 				.filter(person -> !Objects.equals(null, person.getLastName()))
 				.collect(Collectors.groupingBy(Person::getLastName, Collectors.summingInt(Person::getAge)));
-		// collect4.entrySet()
-		//		.forEach(map -> System.out.println("lastName : " + map.getKey() + ", 年龄和 ： " + map.getValue()));
+		collect4.entrySet()
+				.forEach(map -> System.out.println("lastName : " + map.getKey() + ", 年龄和 ： " + map.getValue()));
 
 		// 6.
 		Map<Integer, Set<Person>> ollect5 = people.stream()
@@ -104,6 +105,27 @@ public class Java8Collection {
 						)
 				);
 		collect8.entrySet().forEach(System.out::println);
+
+
+		long sum = people.stream()
+				.mapToLong(Person::getAge)
+				.sum();
+		System.out.println(sum);
+
+
+	}
+
+	@Test
+	public void test6() {
+		List<Person> hahah = people.stream()
+				.map(person -> {
+					person.setFirstName("hahah");
+					return person;
+				})
+				.collect(Collectors.toList());
+
+		hahah.forEach(System.out::println);
+
 	}
 
 	@Test
@@ -331,6 +353,154 @@ public class Java8Collection {
 				.collect(Collectors.toList());
 		System.out.println(JSON.toJSONString(collect));
 
+	}
+
+	@Test
+	public void test5() {
+		List<Column> list = new ArrayList<>();
+		Column column1 = new Column("乘用车", "1乘用车", 200.00);
+		Column column11 = new Column("乘用车", "2乘用车", 200.00);
+		Column column111 = new Column("乘用车", "2乘用车", 200.00);
+		Column column12 = new Column("乘用车", "3乘用车", 200.00);
+		Column column13 = new Column("乘用车", "4乘用车", 200.00);
+		Column column14 = new Column("乘用车", "5乘用车", 200.00);
+		Column column15 = new Column("乘用车", "6乘用车", 200.00);
+		Column column151 = new Column("乘用车", "6乘用车", 200.00);
+		Column column2 = new Column("商用车", "1商用车", 200.00);
+		Column column21 = new Column("商用车", "2商用车", 200.00);
+		Column column211 = new Column("商用车", "2商用车", 200.00);
+		Column column22 = new Column("商用车", "3商用车", 200.00);
+		Column column23 = new Column("商用车", "4商用车", 200.00);
+		Column column24 = new Column("商用车", "5商用车", 200.00);
+		Column column25 = new Column("商用车", "6商用车", 200.00);
+		Column column3 = new Column("客车", "1客车", 200.00);
+		Column column31 = new Column("客车", "2客车", 200.00);
+		Column column32 = new Column("客车", "3客车", 200.00);
+		Column column33 = new Column("客车", "4客车", 200.00);
+		Column column34 = new Column("客车", "5客车", 200.00);
+		Column column35 = new Column("客车", "6客车", 200.00);
+		list.add(column1);
+		list.add(column11);
+		list.add(column111);
+		list.add(column12);
+		list.add(column13);
+		list.add(column14);
+		list.add(column15);
+		list.add(column151);
+		list.add(column2);
+		list.add(column21);
+		list.add(column211);
+		list.add(column22);
+		list.add(column23);
+		list.add(column24);
+		list.add(column25);
+		list.add(column3);
+		list.add(column31);
+		list.add(column32);
+		list.add(column33);
+		list.add(column34);
+		list.add(column35);
+
+		List<KvPojo> collect = list.stream()
+				.collect(Collectors.groupingBy(Column::getColumn1))
+				.entrySet()
+				.stream()
+				.map(entry -> {
+					String k = entry.getKey();
+					double v = entry.getValue()
+							.stream()
+							.mapToDouble(Column::getColumn3)
+							.sum();
+					return new KvPojo(k, v);
+				})
+				.collect(Collectors.toList());
+
+		List<Map<String, List<KvPojo>>> mapList = list.stream()
+				.collect(Collectors.groupingBy(Column::getColumn1, Collectors.groupingBy(Column::getColumn2)))
+				.entrySet()
+				.stream()
+				.map(entry -> {
+					// 第取出一级分组
+					String k1 = entry.getKey();
+					// 二级分组的数据
+					Map<String, List<Column>> v1 = entry.getValue();
+
+					List<KvPojo> collect1 = v1.entrySet()
+							.stream()
+							.map(entry2 -> {
+								String k2 = entry2.getKey();
+								double v2 = entry2.getValue()
+										.stream()
+										.mapToDouble(Column::getColumn3)
+										.sum();
+								return new KvPojo(k2, v2);
+							})
+							.collect(Collectors.toList());
+
+					Map<String, List<KvPojo>> listList = new LinkedHashMap<>();
+					listList.put(k1, collect1);
+					return listList;
+				})
+				.collect(Collectors.toList());
+
+		String s = JSON.toJSONString(mapList);
+		System.out.println(s);
+
+		double sum = list.stream()
+				.mapToDouble(Column::getColumn3)
+				.sum();
+		System.out.println(sum);
+	}
+
+	@Test
+	public void testC() {
+		List<String> listS = new ArrayList<>();
+		listS.add("00:00");
+		listS.add("00:30");
+		listS.add("12:00");
+		listS.add("8:30");
+		listS.add("23:00");
+		listS.stream()
+				.sorted(Comparator.comparingInt(r -> Integer.valueOf(r.replace(":", ""))))
+				.forEach(System.out::println);
+
+		listS = new ArrayList<>();
+		listS.add("2019（1-2月）");
+		listS.add("2019（1-3月）");
+		listS.add("2019（1-4月）");
+		listS.add("2019（1-5月）");
+		listS.add("2017");
+		listS.add("2018");
+
+		listS.stream()
+				.sorted()
+				.forEach(System.out::println);
+
+
+	}
+
+	/**
+	 * list通过流转map,如果有相同的映射的话会报错，这时候我们要指定第三方策略
+	 */
+	@Test
+	public void testCollectorsToMap() {
+		people.stream()
+				.collect(Collectors.toMap(Person::getFirstName
+						, Person::getLastName
+						, (existing, replacement) -> existing)
+				)
+				.entrySet()
+				.forEach(System.out::println);
+		System.out.println("*******************");
+		people.stream()
+				.collect(
+						Collectors.toMap(Person::getFirstName
+						, Person::getLastName
+						, (o1, o2) -> o1
+						, ConcurrentHashMap::new)
+				)
+				.entrySet()
+				.forEach(System.out::println);
 	}
 }
 

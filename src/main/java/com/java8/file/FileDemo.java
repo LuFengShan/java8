@@ -7,6 +7,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.*;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -31,9 +32,9 @@ public class FileDemo {
 	 */
 	@Test
 	public void testListPath() {
-		// Files.list()返回一个指定路径下的所有的目录，如指定C盘，则返回C盘下的所的目录，但是不会返回子目录（第二级目录）
+		// Files.list()返回一个指定路径下的所有的文件夹及文件，如指定C盘，则返回C盘下的所的目录，但是不会返回子目录（第二级目录）
 		// 列出了当前工作目录的所有文件 Stream<Path> list = Files.list(Paths.get(""))
-		try (Stream<Path> list = Files.list(Paths.get("C:/"))) {
+		try (Stream<Path> list = Files.list(Paths.get("d:\\github\\java8"))) {
 			list.map(String::valueOf) // 把Path转换成String字符串
 					.filter(path -> !path.contains("$")) // 一次函数
 					.sorted()
@@ -45,24 +46,29 @@ public class FileDemo {
 	}
 
 	/**
-	 * Java 7引入了一个更快的替代方案列出目录中的文件
+	 * Java 7引入了一个更快的替代方案列出目录中的文件夹及文件
 	 * {@link DirectoryStream}
+	 *
 	 * @return
 	 * @throws IOException
 	 */
 	@Test
 	public void listFilesUsingDirectoryStream() throws IOException {
-		String dir = "C:/";
+		String dir = "d:\\github\\java8";
 		Set<String> fileList = new HashSet<>();
+		List<String> list = new ArrayList<>();
 		try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(dir))) {
 			for (Path path : stream) {
-				if (Files.isDirectory(path)) { // 判断这个文件是不是一个文件包
+				if (Files.isDirectory(path)) { // 判断这个文件是不是一个文件夹，如果是文件夹就存入fileList
 					fileList.add(path.getFileName()
 							.toString());
 				}
+				list.add(path.getFileName().toString());
 			}
 		}
 		fileList.forEach(System.out::println);
+		System.out.println("///////////");
+		list.forEach(System.out::println);
 	}
 
 	/**
@@ -76,9 +82,9 @@ public class FileDemo {
 	@Test
 	public void testFindFileWithFind() {
 		// 1. 指定当前的工作目录
-		Path start = Paths.get("");
+		Path start = Paths.get("d:/github/java8");
 		// 2. 指定文件层次的深度
-		int maxDepth = 5;
+		int maxDepth = 7;
 		try (Stream<Path> stream = Files.find(start, maxDepth, (path, attr) -> String.valueOf(path) // 指定搜索的逻辑算法
 				.endsWith(".java"))) {
 			stream.sorted()
@@ -99,9 +105,9 @@ public class FileDemo {
 	@Test
 	public void testFindFileWithWalk() {
 		// 1. 指定搜索的起始目录
-		Path start = Paths.get("");
+		Path start = Paths.get("d:/github/java8");
 		// 2. 指定目录搜索的深度
-		int maxDepth = 5;
+		int maxDepth = 7;
 		try (Stream<Path> stream = Files.walk(start, maxDepth)) {
 			stream.map(String::valueOf)
 					.filter(path -> path.endsWith(".java"))
@@ -147,6 +153,7 @@ public class FileDemo {
 	public void testFileRead02() {
 		try (Stream<String> stream = Files.lines(Paths.get("README.md"))) {
 			stream.map(String::trim)
+
 					.forEach(System.out::println);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -171,6 +178,7 @@ public class FileDemo {
 	/**
 	 * 写入文件，效率太低，我们可以编写一个写入缓冲器，参考{@link FileDemo#testFileWrite02()}
 	 * 但是有一个问题，就是java在读取换行的时候，默认是把换行符给去掉了，所以我们在写入文件的时候要注意这个问题
+	 *
 	 * @throws IOException
 	 */
 	@Test
@@ -185,6 +193,7 @@ public class FileDemo {
 
 	/**
 	 * 写入文件，构造一个缓冲编写器
+	 *
 	 * @throws IOException
 	 */
 	@Test
@@ -192,7 +201,7 @@ public class FileDemo {
 		Path pathRead = Paths.get("README.md");
 		Path pathWrite = Paths.get("d:/readme-my.md");
 		try (BufferedReader reader = Files.newBufferedReader(pathRead);
-			 BufferedWriter writer = Files.newBufferedWriter(pathWrite)) {
+		     BufferedWriter writer = Files.newBufferedWriter(pathWrite)) {
 			// reader.readLine()只读取第一行
 			reader.lines().forEach(s -> {
 				try {
