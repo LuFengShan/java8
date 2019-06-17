@@ -228,10 +228,10 @@ public class FileDemo {
 			Path pathWrite  = Paths.get(filePath + "（" + i + "）.csv");
 			BufferedWriter writer = Files.newBufferedWriter(pathWrite);
 			for (String str : stringList) {
-				if (line > 200000) {
+				if (line > 200001) {
 					writer.flush();
 					writer.close();
-					line = 1;
+					line = 2;
 					i++;
 					// 如果是拆分csv就加上以下四行，目的是增加第一行数据，使excel格式不乱
 					pathWrite = Paths.get(filePath + "（" + i + "）.csv");
