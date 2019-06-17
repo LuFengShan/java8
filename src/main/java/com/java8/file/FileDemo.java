@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BiPredicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -151,9 +152,8 @@ public class FileDemo {
 	 */
 	@Test
 	public void testFileRead02() {
-		try (Stream<String> stream = Files.lines(Paths.get("README.md"))) {
+		try (Stream<String> stream = Files.lines(Paths.get("d:/车辆静态信息表.txt"))) {
 			stream.map(String::trim)
-
 					.forEach(System.out::println);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -165,7 +165,7 @@ public class FileDemo {
 	 */
 	@Test
 	public void testFileRead03() {
-		Path path = Paths.get("D:/Spring Boot.md");
+		Path path = Paths.get("D:/车辆静态信息表.txt");
 		try (BufferedReader reader = Files.newBufferedReader(path)) {
 			// reader.readLine()只读取第一行
 			reader.lines()
@@ -217,5 +217,35 @@ public class FileDemo {
 		System.out.println("over");
 	}
 
+	@Test
+	public void testBigFileReadAndWrite() {
+		String filePath = "D:/车辆静态信息表";
+		try (BufferedReader reader = Files.newBufferedReader(Paths.get("D:/车辆静态信息表.txt"))) {
+			// 读取所有的文件
+			List<String> stringList = reader.lines().collect(Collectors.toList());
+			long line = 1;
+			int i = 1;
+			Path pathWrite  = Paths.get(filePath + "（" + i + "）.csv");
+			BufferedWriter writer = Files.newBufferedWriter(pathWrite);
+			for (String str : stringList) {
+				if (line > 200000) {
+					writer.flush();
+					writer.close();
+					line = 1;
+					i++;
+					// 如果是拆分csv就加上以下四行，目的是增加第一行数据，使excel格式不乱
+					pathWrite = Paths.get(filePath + "（" + i + "）.csv");
+					writer = Files.newBufferedWriter(pathWrite);
+					writer.write(stringList.get(0));
+					writer.newLine();
+				}
+				writer.write(str);
+				writer.newLine();
+				line++;
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 }
