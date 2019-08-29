@@ -1,5 +1,7 @@
 package com.java8.streams;
 
+import org.junit.jupiter.api.Test;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -67,6 +69,50 @@ public class StreamDemo01 {
 				.entrySet()
 				.stream()
 				.forEach(e -> System.out.println(e.getKey() + " : " + e.getValue()));
+	}
+
+	@Test
+	public void tst() {
+		List<String> list = new ArrayList<>();
+		list.add("37-48");
+		list.add("37-48");
+		list.add("37-48");
+		list.add("37-48");
+		list.add("13-24");
+		list.add("25-36");
+		list.add("0-12");
+		list.add("0-12");
+		list.add("0-12");
+		list.add("49-60");
+		list.add("61-72");
+		list.add(">120");
+		list.add("73-84");
+		list.add("85-96");
+		list.add("97-108");
+		list.add("109-120");
+		list.stream()
+				.sorted((x, y) -> {
+					int a = 0;
+					int b = 0;
+					if (x.contains("-")) {
+						String s = x.split("-")[0];
+						a = Integer.parseInt(s);
+					}
+					if (x.startsWith(">")) {
+						a = Integer.parseInt(x.substring(1));
+					}
+					if (y.contains("-")) {
+						String s1 = y.split("-")[0];
+						b = Integer.parseInt(s1);
+					}
+					if (y.startsWith(">")) {
+						b = Integer.parseInt(y.substring(1));
+					}
+
+					return a - b;
+				})
+				.forEach(System.out::println);
+
 	}
 
 }

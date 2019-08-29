@@ -1,5 +1,7 @@
 package com.java8.string;
 
+import org.junit.jupiter.api.Test;
+
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -60,5 +62,34 @@ public class StringDemo {
 		//
 		
 
+	}
+
+	@Test
+	public void tes() {
+		String sql = "select \n" +
+				"v.*\n" +
+				"FROM\n" +
+				"(\n" +
+				"SELECT\n" +
+				"v.PROVINCE_DEPT as provinceDept,\n" +
+				"START_LONGITUDE AS startLng,\n" +
+				"START_LATITUDE AS startLat,\n" +
+				"END_LONGITUDE AS endLng,\n" +
+				"END_LATITUDE AS endLat,\n" +
+				"row_number() over (partition by v.PROVINCE_DEPT order by c.km desc) rn\n" +
+				"FROM\n" +
+				"IMPALA_VEH_DAY_SINGLE_RUN c,\n" +
+				"SYS_VEHICLE_NATIONAL v\n" +
+				"WHERE 1 = 1 \n" +
+				"AND c.VID = V.UUID\n" +
+				"AND c.km > 1\n" +
+				"AND c.km < 200\n" +
+				"AND\n" +
+				"c.REPORT_DATE >= '2019-08-10' \n" +
+				"AND\n" +
+				"c.REPORT_DATE <= '2019-08-11' \n" +
+				") v\n" +
+				"where v.rn <= 3000;\n";
+		System.out.println(sql);
 	}
 }

@@ -7,10 +7,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -55,7 +52,7 @@ public class FileDemo {
 	 */
 	@Test
 	public void listFilesUsingDirectoryStream() throws IOException {
-		String dir = "d:\\github\\java8";
+		String dir = "C:\\Users\\Administrator\\Documents\\异地行驶(2)";
 		Set<String> fileList = new HashSet<>();
 		List<String> list = new ArrayList<>();
 		try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(dir))) {
@@ -198,10 +195,10 @@ public class FileDemo {
 	 */
 	@Test
 	public void testFileWrite02() {
-		Path pathRead = Paths.get("README.md");
-		Path pathWrite = Paths.get("d:/readme-my.md");
+		Path pathRead = Paths.get("d:/上海市2018-11.txt");
+		Path pathWrite = Paths.get("d:/上海市2018-11-2.txt");
 		try (BufferedReader reader = Files.newBufferedReader(pathRead);
-		     BufferedWriter writer = Files.newBufferedWriter(pathWrite)) {
+			 BufferedWriter writer = Files.newBufferedWriter(pathWrite)) {
 			// reader.readLine()只读取第一行
 			reader.lines().forEach(s -> {
 				try {
@@ -210,11 +207,36 @@ public class FileDemo {
 					e.printStackTrace();
 				}
 			});
-			writer.write("这是我自己写入的");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		System.out.println("over");
+	}
+
+
+	@Test
+	public void testFileWrite_yk() {
+		Path pathRead = Paths.get("d:/上海市2018-11.txt");
+		Path pathWrite = Paths.get("d:/上海市2018-11-3.txt");
+		try (BufferedReader reader = Files.newBufferedReader(pathRead);
+			 BufferedWriter writer = Files.newBufferedWriter(pathWrite)) {
+			// reader.readLine()只读取第一行
+			List<String> collect = reader.lines().collect(Collectors.toList());
+			writer.write("[");
+			int size = collect.size();
+			for (int i = 0; i < size; i++) {
+				if (Objects.equals(i, size - 1)) {
+					String str = collect.get(i);
+					str = str.substring(0, str.length() - 1);
+					writer.write(str);
+				} else {
+					writer.write(collect.get(i));
+				}
+			}
+			writer.write("]");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Test
@@ -225,7 +247,7 @@ public class FileDemo {
 			List<String> stringList = reader.lines().collect(Collectors.toList());
 			long line = 1;
 			int i = 1;
-			Path pathWrite  = Paths.get(filePath + "（" + i + "）.csv");
+			Path pathWrite = Paths.get(filePath + "（" + i + "）.csv");
 			BufferedWriter writer = Files.newBufferedWriter(pathWrite);
 			for (String str : stringList) {
 				if (line > 200001) {
@@ -246,6 +268,13 @@ public class FileDemo {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Test
+	public void test23() {
+		String str = "{15613},";
+		String substring = str.substring(0, str.length() - 1);
+		System.out.println(substring);
 	}
 
 }
