@@ -2,12 +2,10 @@ package com.java8.string;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
@@ -60,7 +58,7 @@ public class StringDemo {
 		System.out.println(count); // 1
 
 		//
-		
+
 
 	}
 
@@ -92,4 +90,23 @@ public class StringDemo {
 				"where v.rn <= 3000;\n";
 		System.out.println(sql);
 	}
+
+	@Test
+	public void test22() {
+		Map<String, String> map = new HashMap<>(20);
+		// 充电开始时间
+		int start = Integer.valueOf("0").intValue();
+		// 充电结束时间
+		int end = Integer.valueOf("2").intValue();
+		System.out.println(start);
+		System.out.println(end);
+
+		IntStream.range(start, end + 1)
+				// 时间段和充电的车进行映射存放
+				.forEach(i -> map.put(String.valueOf(i >> 1), "i" + i));
+
+		map.entrySet()
+				.forEach(entyt -> System.out.println(entyt.getKey() + " : " + entyt.getValue()));
+	}
+
 }
