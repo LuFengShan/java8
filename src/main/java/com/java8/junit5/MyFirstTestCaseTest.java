@@ -4,6 +4,7 @@ import org.junit.jupiter.api.*;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
+import java.util.Date;
 
 /**
  *
@@ -90,5 +91,12 @@ public class MyFirstTestCaseTest {
 		Assertions.assertThrows(IllegalArgumentException.class, () -> {
 			Integer.valueOf(str);
 		});
+	}
+
+	@Test
+	void testJwtTokenTime(){
+		System.out.println(new Date());
+		System.out.println(new Date((new Date()).getTime()));
+		System.out.println(new Date((new Date()).getTime() + 86400 * 1000));
 	}
 }
