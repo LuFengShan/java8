@@ -97,7 +97,7 @@ public class FastjsonDemo {
 			Path pathRead = Paths.get(dir + File.separator + pathFile);
 			logger.info(() -> "读取json文件的位置 ： " + pathRead.toString());
 			// 生成文件的位置
-			Path pathWrite = Paths.get(tarDir + File.separator+ pathFile);
+			Path pathWrite = Paths.get(tarDir + File.separator + pathFile);
 			logger.info(() -> "生成文件的位置 ： " + pathWrite.toString());
 			try (BufferedReader reader = Files.newBufferedReader(pathRead);
 				 BufferedWriter writer = Files.newBufferedWriter(pathWrite)) {
@@ -132,5 +132,18 @@ public class FastjsonDemo {
 		BigDecimal b1 = new BigDecimal(value1);
 		BigDecimal b2 = new BigDecimal(value2);
 		return b1.divide(b2, scale, BigDecimal.ROUND_HALF_EVEN);
+	}
+
+
+	@Test
+	public void demo() {
+		String abVoltage = "-0.8407_-0.7713_-0.7785_-1.8508_-0.9836_0.1431_-1.116_1.2101_0.4105_-0.6777_0.5846_-1.5804_0.59_-0.2254_1.276_0.2406_-1.0498_0.1518_-0.4241_-0.2254_-1.0498_-0.0998_0.0633_-0.4071_0.5846_-1.1017_-1.1409_-1.6047_-0.0727_-0.699_-0.5476_-0.2254_-0.5464_-0.0905_0.0783_-0.2108_0.4295_0.1678_0.7175_-0.8913_-0.1567_-2.1825_2.1573_0.9555_0.6824_-0.5911_0.9569_-0.4775_1.8271_1.8032_0.1685_0.6004_-0.773_-0.2332_-0.3162_0.4732_0.6824_0.6004_0.7449_1.6444_0.5342_0.7587_0.2848_0.4172_0.2572_0.9757_0.5846_0.052_-0.0844_0.3369_-0.67_0.6056_0.9432_1.7249_0.069_0.0502_0.6776_0.069_-0.2026_-0.1567_0.8307_0.1935_2.0751_0.7666_-5.1494_-1.6331_-0.3849_-0.6155_-1.2301_-0.0673_1.0256_-0.069_0.6135_0.0278_-0.0243_0.411";
+		String[] abString = abVoltage.split("_");
+		HashMap<Integer, Double> map;
+		for (int i = 0; i < abString.length; i++) {
+			map = new HashMap<>();
+			map.put(i + 1, Double.valueOf(abString[i]));
+			System.out.println(JSON.toJSONString(map));
+		}
 	}
 }

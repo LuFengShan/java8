@@ -154,6 +154,14 @@ public class DateDemo01 {
 
 		LocalTime leetTime = LocalTime.parse("13:37", germanFormatter);
 		System.out.println(leetTime);
+
+
+		String st = "2019-10-12 12:52:22";
+		LocalDate parseDate = LocalDate.parse(st.split(" ")[0], DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+		System.out.println(parseDate);
+		System.out.println(LocalDate.now());
+		System.out.println(LocalDate.now().isAfter(parseDate));
+		System.out.println(LocalDate.now().isBefore(parseDate));
 	}
 
 
