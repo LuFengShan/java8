@@ -38,10 +38,10 @@ public class DateDemo02 {
 		// 获取指定日期所在月的第一天的日期
 		System.out.println(localDate + " 这天所在月的第一天的日期: " + localDate.with(TemporalAdjusters.firstDayOfMonth()));
 
-		// 比较一个日期是否在一个日期的前面
+		// 比较一个前面这个日期是否在后面的一个日期的前面
 		boolean notBefore = LocalDate.parse("2019-10-01").isBefore(LocalDate.parse("2019-10-02"));
 		System.out.println(notBefore);
-		// 比较一个日期是否在一个日期的后面
+		// 比较一个前面这个日期是否在后面的日期的后面
 		boolean isAfter = LocalDate.parse("2019-10-01").isAfter(LocalDate.parse("2019-10-02"));
 		System.out.println(isAfter);
 
@@ -191,6 +191,8 @@ public class DateDemo02 {
 		String str = dateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
 		System.out.println(str);
 		str = dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+		System.out.println(str);
+		str = dateTime.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
 		System.out.println(str);
 	}
 }
