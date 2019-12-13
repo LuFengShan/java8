@@ -1,5 +1,7 @@
 package com.java8.concurrent;
 
+import org.junit.jupiter.api.Test;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -13,13 +15,9 @@ import java.util.concurrent.locks.StampedLock;
  * 另外，标记锁支持另一种称为乐观锁定的锁定模式
  */
 public class StampedLockDemo {
-	public static void main(String[] args) {
-		// test01();
-		// test02();
-		test03();
-	}
 
-	public static void test01() {
+	@Test
+	public void test01() {
 		ExecutorService service = Executors.newFixedThreadPool(2);
 		Map<String, Integer> map = new HashMap<>();
 		StampedLock lock = new StampedLock();
@@ -62,7 +60,8 @@ public class StampedLockDemo {
 	/**
 	 * StampedLock的乐观锁定
 	 */
-	public static void test02() {
+	@Test
+	public void test02() {
 		ExecutorService executor = Executors.newFixedThreadPool(2);
 		Map<String, Integer> map = new HashMap<>();
 		StampedLock lock = new StampedLock();
@@ -108,10 +107,12 @@ public class StampedLockDemo {
 	}
 
 	private static int count = 0;
+
 	/**
 	 * 将读锁定转换为写锁定而不再进行解锁和锁定是可以的。StampedLock提供了tryConvertToWriteLock()用于此目的的方法
 	 */
-	public static void test03() {
+	@Test
+	public void test03() {
 		ExecutorService executor = Executors.newFixedThreadPool(2);
 		StampedLock lock = new StampedLock();
 

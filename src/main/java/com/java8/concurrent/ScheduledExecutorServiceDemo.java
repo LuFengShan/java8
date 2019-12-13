@@ -1,21 +1,20 @@
 package com.java8.concurrent;
 
+import org.junit.jupiter.api.Test;
+
 import java.util.concurrent.*;
 
 /**
  * ScheduledExecutorService能够在一定时间过后定期执行一些任务
  */
 public class ScheduledExecutorServiceDemo {
-	public static void main(String[] args) throws InterruptedException {
-		// testScheduledExecutorService();
-		testScheduledExecutorServiceScheduleAtFixedRateAndScheduleWithFixedDelay();
-	}
 
 	/**
 	 * 安排定期执行的任务，执行者提供了两种方法scheduleAtFixedRate()和scheduleWithFixedDelay()。
 	 * scheduleAtFixedRate:能够以固定的时间速率执行任务，例如每秒一次
 	 */
-	private static void testScheduledExecutorService() throws InterruptedException {
+	@Test
+	public void testScheduledExecutorService() throws InterruptedException {
 		// 执行器服务提供者
 		ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 		Runnable task = () -> System.out.println("任务1 : " + System.nanoTime());
@@ -25,12 +24,22 @@ public class ScheduledExecutorServiceDemo {
 
 		TimeUnit.MILLISECONDS.sleep(1000);
 		// getDelay()检索剩余延迟的方法
-		long delay = schedule.getDelay(TimeUnit.MILLISECONDS);
-		System.out.println("剩余延迟(Remaining Delay): "+delay);
+		long milliseconds = schedule.getDelay(TimeUnit.MILLISECONDS);
+		long seconds = schedule.getDelay(TimeUnit.SECONDS);
+		long minutes = schedule.getDelay(TimeUnit.MINUTES);
+		System.out.println("剩余延迟(毫秒): " + milliseconds);
+		System.out.println("剩余延迟(秒): " + seconds);
+		System.out.println("剩余延迟(分钟): " + minutes);
 
 		// 能够以固定的时间速率执行任务，例如每秒一次
 		// (线程，初始延迟，频率，延迟类型（秒，分，小时）)
-		executor.scheduleAtFixedRate(task, 0, 1, TimeUnit.SECONDS);
+		schedule = executor.scheduleAtFixedRate(task, 0, 1, TimeUnit.SECONDS);
+		milliseconds = schedule.getDelay(TimeUnit.MILLISECONDS);
+		seconds = schedule.getDelay(TimeUnit.SECONDS);
+		minutes = schedule.getDelay(TimeUnit.MINUTES);
+		System.out.println("剩余延迟(毫秒): " + milliseconds);
+		System.out.println("剩余延迟(秒): " + seconds);
+		System.out.println("剩余延迟(分钟): " + minutes);
 
 		// 关闭执行器
 		executor.shutdown();
@@ -40,7 +49,8 @@ public class ScheduledExecutorServiceDemo {
 	 * 安排定期执行的任务，执行者提供了两种方法scheduleAtFixedRate()和scheduleWithFixedDelay()。
 	 * scheduleAtFixedRate:能够以固定的时间速率执行任务，例如每秒一次
 	 */
-	private static void testScheduledExecutorServiceScheduleAtFixedRateAndScheduleWithFixedDelay() {
+	@Test
+	public void testScheduledExecutorServiceScheduleAtFixedRateAndScheduleWithFixedDelay() {
 		// 执行器服务提供者
 		ScheduledExecutorService executor = Executors.newScheduledThreadPool(2);
 		Runnable task = () -> System.out.println("任务1 : " + System.nanoTime());
@@ -54,8 +64,7 @@ public class ScheduledExecutorServiceDemo {
 			try {
 				TimeUnit.SECONDS.sleep(2);
 				System.out.println("任务2 : " + System.nanoTime());
-			}
-			catch (InterruptedException e) {
+			} catch (InterruptedException e) {
 				System.err.println("task interrupted");
 			}
 		};

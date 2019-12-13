@@ -2,10 +2,12 @@ package com.java8.concurrent;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.stream.IntStream;
 
 /**
  * ReadWriteLock接口指定另一种类型的锁，它保持一对锁以进行读写访问。
@@ -28,7 +30,7 @@ public class ReadWriteLockDemo {
 			try {
 				// 线程睡1s
 				ConcurrentUtils.sleep(2);
-				map.put("gg", "争气的人");
+				map.put(UUID.randomUUID().toString().substring(0, 5), "争气的人");
 			} finally {
 				lock.writeLock().unlock();
 			}
@@ -46,15 +48,19 @@ public class ReadWriteLockDemo {
 		Runnable readTask = () -> {
 			lock.readLock().lock();
 			try {
-				System.out.println(map.get("gg") + ":" + System.nanoTime());
+				System.out.println(map.size());
+				map.entrySet()
+						.forEach(entry -> System.out.println(entry.getKey() + ":" + entry.getValue()));
 				ConcurrentUtils.sleep(1);
 			} finally {
 				lock.readLock().unlock();
 			}
 
 		};
-		service.submit(readTask);
-		service.submit(readTask);
+		IntStream.range(0, 5)
+				.forEach(i -> service.submit(writeTask));
+		IntStream.range(0, 10)
+				.forEach(i -> service.submit(readTask));
 
 		ConcurrentUtils.stop(service);
 	}
