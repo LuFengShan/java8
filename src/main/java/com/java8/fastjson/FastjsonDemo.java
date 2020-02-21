@@ -18,6 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -74,6 +75,53 @@ public class FastjsonDemo {
 		personList.setList(list);
 
 		logger.info(() -> JSON.toJSONString(personList)); // {"cone":1001,"list":[["san","zhang"],["si","li"]]}
+	}
+	
+	@Test
+	public void testGPSToBd() {
+		String dir = "C:\\Users\\Administrator\\Desktop\\经纬度\\h2data";
+		String tarDir = "d:/经纬度";
+		List<String> list = new ArrayList<>();
+		try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(dir))) {
+			for (Path path : stream) {
+				if (!Files.isDirectory(path)) { // 判断这个文件是不是一个文件夹，如果不是文件夹就存入文件的名字
+					list.add(path.getFileName().toString());
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		for (String pathFile : list) {
+			// 读取文件的位置
+			Path pathRead = Paths.get(dir + File.separator + pathFile);
+			logger.info(() -> "读取文件的位置 ： " + pathRead.toString());
+			// 生成文件的位置
+			Path pathWrite = Paths.get(tarDir + File.separator + pathFile);
+			logger.info(() -> "生成文件的位置 ： " + pathWrite.toString());
+			try (BufferedReader reader = Files.newBufferedReader(pathRead);
+			     BufferedWriter writer = Files.newBufferedWriter(pathWrite)) {
+				// 读取文档中的所有内容
+				List<List<Double>> lonLats = reader.lines()
+						.skip(1)
+						.map(s -> {
+							List<String> strings = Pattern.compile(",")
+									.splitAsStream(s)
+									.collect(Collectors.toList());
+							Gps gps = PositionUtil.gcj02_To_Bd09(Double.parseDouble(strings.get(3)), Double.parseDouble(strings.get(2)));
+							return Arrays.asList(gps.getWgLon(), gps.getWgLat());
+							// return String.join(",", String.valueOf(gps.getWgLon()), String.valueOf(gps.getWgLat()));
+						})
+						.collect(Collectors.toList());
+				// 处理后以转换成json
+				String result = JSON.toJSONString(lonLats);
+				// 把json存入文档中
+				writer.write(result);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		logger.info(() -> "文件转换完毕！");
 	}
 
 	@Test

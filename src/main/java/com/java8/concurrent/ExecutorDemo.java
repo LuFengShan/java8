@@ -1,22 +1,42 @@
 package com.java8.concurrent;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import org.junit.jupiter.api.Test;
+
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.IntStream;
 
 public class ExecutorDemo {
-
-	public static void main(String[] args) {
-		test1();
+	
+	private AtomicInteger num = new AtomicInteger(0);
+	
+	@Test
+	public void test() {
+		
+		Runnable runnable = () -> num.getAndIncrement();
+		
+		// 创建一个核心数量和最大线程数量一样的无界的队列的线程池
+		ExecutorService newFixedThreadPool = Executors.newFixedThreadPool(4);
+		
+		IntStream.range(1, 101)
+				.forEach(i -> {
+					System.out.println(new Thread(runnable).getName());
+					newFixedThreadPool.submit(runnable);
+				});
+		
+		System.out.println(num.get());
+		ConcurrentUtils.stop(newFixedThreadPool);
+		
 	}
-
+	
+	@Test
 	public static void test1() {
 		// 1. 该类Executors提供了方便的工厂方法来创建不同类型的执行程序服务。在此示例中，我们使用具有大小为1的线程池的执行程序
 		ExecutorService executorService = Executors.newCachedThreadPool();
 		Runnable task = () -> {
-			try{
+			try {
 				TimeUnit.SECONDS.sleep(3);
-			}catch (Exception e) {
+			} catch (Exception e) {
 				System.out.println("e : 任务中断");
 			}
 			String name = Thread.currentThread().getName();
@@ -30,18 +50,16 @@ public class ExecutorDemo {
 		//  同时shutdownNow()中断所有正在运行的任务并立即关闭执行程序。
 		stop(executorService);
 	}
-
+	
 	static void stop(ExecutorService executor) {
 		try {
 			System.out.println("attempt to shutdown executor");
 			executor.shutdown();
 			executor.awaitTermination(5, TimeUnit.SECONDS);
-		}
-		catch (InterruptedException e) {
+		} catch (InterruptedException e) {
 			System.err.println("termination interrupted");
-		}
-		finally {
-			if (!executor.isTerminated()) {
+		} finally {
+			if (! executor.isTerminated()) {
 				System.err.println("killing non-finished tasks");
 			}
 			executor.shutdownNow();

@@ -1,10 +1,9 @@
 package com.java8.concurrent;
 
 import org.junit.jupiter.api.Test;
-import org.junit.platform.commons.logging.Logger;
-import org.junit.platform.commons.logging.LoggerFactory;
 
 import java.util.concurrent.TimeUnit;
+import java.util.stream.IntStream;
 
 /**
  * Java 从JDK 1.0开始支持Threads。在开始新线程之前，您必须指定此线程要执行的代码，通常称为任务task 。
@@ -65,4 +64,82 @@ public class ThreadDemo {
 		thread.start();
 		// Foo Thread-1
 	}
+	
+	@Test
+	public void testRunnableAndCallable(){
+		System.out.println(Thread.currentThread().getPriority());
+		Runnable runnable = new MyThread();
+		
+		// Callable<Double> callable = () -> Math.random();
+		IntStream.rangeClosed(1, 10)
+				.forEach(i -> {
+					System.out.println(Thread.currentThread().getPriority());
+					Thread thread = new Thread(runnable, "runnable" + i);
+					thread.start();
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					if (thread.isInterrupted()==false) {    //该线程中断了吗？
+						System.out.println("我偷偷地打扰一下你的睡眠");
+						thread.interrupt();      //中断执行
+					}
+				});
+		
+	}
+	
+	@Test
+	public void testTicket() {
+		TicketThread mt= new TicketThread();
+		new Thread(mt,"票贩子A").start() ;
+		new Thread(mt,"票贩子B").start() ;
+		new Thread(mt,"票贩子C").start() ;
+	}
 }
+
+class MyThread implements Runnable {
+	
+	/**
+	 * When an object implementing interface <code>Runnable</code> is used
+	 * to create a thread, starting the thread causes the object's
+	 * <code>run</code> method to be called in that separately executing
+	 * thread.
+	 * <p>
+	 * The general contract of the method <code>run</code> is that it may
+	 * take any action whatsoever.
+	 *
+	 * @see Thread#run()
+	 */
+	@Override
+	public void run() {
+		System.out.println("*** 72个小时的疯狂我需要睡觉补充精力。——》" + Thread.currentThread().getName());
+		try {
+			Thread.sleep(10000);     //预计准备休眠10秒
+			System.out.println("****** 睡足了，可以出去继续祸害别人了。");
+		} catch (InterruptedException e) {
+			System.out.println("不要打扰我睡觉，我会生气的。");
+		}
+	}
+}
+
+class TicketThread implements Runnable {
+	private int ticket = 10 ;        //总票数为10张
+	@Override
+	public void run() {
+		while (true) {
+			if (this.ticket > 0) {
+				try {
+					Thread.sleep(1000);    //模拟网络延迟
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				System.out.println(Thread.currentThread().getName() + "卖票，ticket = " + this.ticket--) ;
+			} else {
+				System.out.println("***** 票已经卖光了 *****") ;
+				break ;
+			}
+		}
+	}
+}
+

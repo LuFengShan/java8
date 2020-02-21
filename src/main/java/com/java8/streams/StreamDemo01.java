@@ -7,13 +7,14 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /*
  * 流的处理，流是中间的一个过程，没有结果，不是终端输出的东西,流不会操作原始的数据，只会操作中间的过程，其它的不改变
  */
 public class StreamDemo01 {
-
+	
 	public static void main(String[] args) {
 		List<String> stringCollection = new ArrayList<>();
 		stringCollection.add("ddd2");
@@ -24,7 +25,7 @@ public class StreamDemo01 {
 		stringCollection.add("ccc");
 		stringCollection.add("bbb2");
 		stringCollection.add("ddd1");
-
+		
 		// 过虑 Filter
 		stringCollection.stream().filter(s -> s.startsWith("b")).sorted().forEach(System.out::println);
 		System.out.println("************");
@@ -48,8 +49,8 @@ public class StreamDemo01 {
 		// 减少值 reduce
 		Optional<String> reduce = stringCollection.stream().reduce((s1, s2) -> s1 + "#" + s2);
 		reduce.ifPresent(System.out::println);
-
-
+		
+		
 		stringCollection.stream()
 				.flatMap(s -> Stream.of(s.split("")))
 				.sorted()
@@ -61,7 +62,7 @@ public class StreamDemo01 {
 					e.getValue()
 							.forEach(System.out::print);
 				});
-
+		
 		stringCollection.stream()
 				.flatMap(s -> Stream.of(s.split("")))
 				.sorted()
@@ -70,7 +71,7 @@ public class StreamDemo01 {
 				.stream()
 				.forEach(e -> System.out.println(e.getKey() + " : " + e.getValue()));
 	}
-
+	
 	@Test
 	public void tst() {
 		List<String> list = new ArrayList<>();
@@ -108,12 +109,21 @@ public class StreamDemo01 {
 					if (y.startsWith(">")) {
 						b = Integer.parseInt(y.substring(1));
 					}
-
+					
 					return a - b;
 				})
 				.forEach(System.out::println);
-
+		
 	}
-
+	
+	@Test
+	public void testIntStream() {
+		IntStream.range(1, 10)
+				.forEach(System.out::println);
+		System.out.println("********************");
+		IntStream.rangeClosed(1, 10)
+				.forEach(System.out::println);
+	}
+	
 }
 

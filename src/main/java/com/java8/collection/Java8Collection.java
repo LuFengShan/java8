@@ -208,6 +208,7 @@ public class Java8Collection {
 	 */
 	@Test
 	public void testSumAgeGroupByLastName() {
+		System.out.println(UUID.randomUUID().toString());
 		Map<String, Integer> collect = people.stream()
 				.collect(Collectors.groupingBy(Person::getLastName, Collectors.summingInt(Person::getAge)));
 		collect.entrySet().forEach(System.out::println);

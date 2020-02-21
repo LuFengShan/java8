@@ -9,6 +9,7 @@ import java.net.URI;
 import java.nio.file.*;
 import java.util.*;
 import java.util.function.BiPredicate;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -16,7 +17,7 @@ import java.util.stream.Stream;
  * 用Java列出目录中的文件
  */
 public class FileDemo {
-
+	
 	/**
 	 * <p>{@link Files#list(Path)}
 	 * 返回一个延迟填充的Stream，其中的元素是目录中的条目。列表不是递归的。
@@ -34,15 +35,15 @@ public class FileDemo {
 		// 列出了当前工作目录的所有文件 Stream<Path> list = Files.list(Paths.get(""))
 		try (Stream<Path> list = Files.list(Paths.get("d:\\github\\java8"))) {
 			list.map(String::valueOf) // 把Path转换成String字符串
-					.filter(path -> !path.contains("$")) // 一次函数
+					.filter(path -> ! path.contains("$")) // 一次函数
 					.sorted()
 					.forEach(System.out::println);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
+		
 	}
-
+	
 	/**
 	 * Java 7引入了一个更快的替代方案列出目录中的文件夹及文件
 	 * {@link DirectoryStream}
@@ -68,7 +69,7 @@ public class FileDemo {
 		System.out.println("///////////");
 		list.forEach(System.out::println);
 	}
-
+	
 	/**
 	 * <p>{@link Files#find(Path, int, BiPredicate, FileVisitOption...)}
 	 * Path start:目录路径初始起点，
@@ -91,9 +92,9 @@ public class FileDemo {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
+		
 	}
-
+	
 	/**
 	 * <p>{@link Files#walk(Path, int, FileVisitOption...)}和
 	 * {@link Files#find(Path, int, BiPredicate, FileVisitOption...)}
@@ -114,7 +115,7 @@ public class FileDemo {
 			e.printStackTrace();
 		}
 	}
-
+	
 	/**
 	 * java8读取文件是简单的
 	 * <p>{@link Files#readAllLines(Path)} 将给定文件的所有行读入字符串列表。
@@ -138,9 +139,9 @@ public class FileDemo {
 					.map(String::trim)
 					.forEach(System.out::println);
 		}
-
+		
 	}
-
+	
 	/**
 	 * 按行读取文件，效率比{@link FileDemo#testFileRead()}高
 	 * <p>作为一种节省内存的替代方案，您可以使用该方法{@link Files#lines(Path)}。
@@ -156,22 +157,25 @@ public class FileDemo {
 			e.printStackTrace();
 		}
 	}
-
+	
 	/**
 	 * 如果您需要更细粒度的控制，效率更高的话，您可以构建一个新的缓冲读取器
 	 */
 	@Test
 	public void testFileRead03() {
-		Path path = Paths.get("D:/车辆静态信息表.txt");
+		//Path path = Paths.get("D:/车辆静态信息表.txt");
+		Path path = Paths.get("C:\\Users\\Administrator\\Desktop\\经纬度\\h2data\\foshan\\part-00000-8615bada-3dc8-4aca-8f82-d4408b897266.csv");
 		try (BufferedReader reader = Files.newBufferedReader(path)) {
-			// reader.readLine()只读取第一行
+			//只读取第一行
+			//System.out.println(reader.readLine());
 			reader.lines()
 					.forEach(System.out::println);
+			//System.out.println(reader.lines().count());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-
+	
 	/**
 	 * 写入文件，效率太低，我们可以编写一个写入缓冲器，参考{@link FileDemo#testFileWrite02()}
 	 * 但是有一个问题，就是java在读取换行的时候，默认是把换行符给去掉了，所以我们在写入文件的时候要注意这个问题
@@ -187,7 +191,7 @@ public class FileDemo {
 		Files.write(Paths.get("d:/readme-my.md"), lines);
 		System.out.println("over");
 	}
-
+	
 	/**
 	 * 写入文件，构造一个缓冲编写器
 	 *
@@ -198,7 +202,7 @@ public class FileDemo {
 		Path pathRead = Paths.get("d:/上海市2018-11.txt");
 		Path pathWrite = Paths.get("d:/上海市2018-11-2.txt");
 		try (BufferedReader reader = Files.newBufferedReader(pathRead);
-			 BufferedWriter writer = Files.newBufferedWriter(pathWrite)) {
+		     BufferedWriter writer = Files.newBufferedWriter(pathWrite)) {
 			// reader.readLine()只读取第一行
 			reader.lines().forEach(s -> {
 				try {
@@ -212,14 +216,14 @@ public class FileDemo {
 		}
 		System.out.println("over");
 	}
-
-
+	
+	
 	@Test
 	public void testFileWrite_yk() {
 		Path pathRead = Paths.get("d:/上海市2018-11.txt");
 		Path pathWrite = Paths.get("d:/上海市2018-11-3.txt");
 		try (BufferedReader reader = Files.newBufferedReader(pathRead);
-			 BufferedWriter writer = Files.newBufferedWriter(pathWrite)) {
+		     BufferedWriter writer = Files.newBufferedWriter(pathWrite)) {
 			// reader.readLine()只读取第一行
 			List<String> collect = reader.lines().collect(Collectors.toList());
 			writer.write("[");
@@ -238,7 +242,7 @@ public class FileDemo {
 			e.printStackTrace();
 		}
 	}
-
+	
 	@Test
 	public void testBigFileReadAndWrite() {
 		String filePath = "D:/车辆静态信息表";
@@ -269,12 +273,26 @@ public class FileDemo {
 			e.printStackTrace();
 		}
 	}
-
+	
 	@Test
 	public void test23() {
 		String str = "{15613},";
 		String substring = str.substring(0, str.length() - 1);
 		System.out.println(substring);
 	}
-
+	
+	/**
+	 * 这个女人真讨厌，专业给我找活
+	 *
+	 * @return
+	 * @Author sgx
+	 * @Param
+	 * @Date 2020/1/15
+	 * @version V1.1.0
+	 **/
+	@Test
+	public void zhpy() {
+	
+	}
+	
 }
