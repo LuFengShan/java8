@@ -1,8 +1,9 @@
 package com.java8.collection;
 
+import java.io.Serializable;
 import java.util.StringJoiner;
 
-public class Person {
+public class Person implements Serializable {
 	String firstName;
 	String lastName;
 	int age;
