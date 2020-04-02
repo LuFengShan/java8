@@ -9,7 +9,6 @@ import java.net.URI;
 import java.nio.file.*;
 import java.util.*;
 import java.util.function.BiPredicate;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
