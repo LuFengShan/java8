@@ -14,7 +14,7 @@ public class CallableDemo {
 	public static void main(String[] args) throws ExecutionException, InterruptedException, TimeoutException {
 		// testCallable01();
 		// testCallable02();
-		// testCallableInvokeAll();
+//		 testCallableInvokeAll();
 		testCallableInvokeAny();
 	}
 

@@ -1,5 +1,12 @@
 package com.java8.concurrent;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.SplittableRandom;
+import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
@@ -9,7 +16,7 @@ import java.util.concurrent.BlockingQueue;
 public class BlockingQueueTest {
 	public static void main(String[] args) {
 		// 设置一上只能放置10个对象的线程
-		BlockingQueue<Integer> queue = new ArrayBlockingQueue<>(10);
+		BlockingQueue<Dog> queue = new ArrayBlockingQueue<>(5);
 		Produce produce = new Produce(queue);
 		Consumer consumer = new Consumer(queue);
 		new Thread(consumer).start();
@@ -21,9 +28,9 @@ public class BlockingQueueTest {
  * 一个线程生产对象
  */
 class Produce implements Runnable {
-	BlockingQueue<Integer> queue = null;
+	BlockingQueue<Dog> queue = null;
 
-	public Produce(BlockingQueue<Integer> queue) {
+	public Produce(BlockingQueue<Dog> queue) {
 		this.queue = queue;
 	}
 
@@ -31,9 +38,13 @@ class Produce implements Runnable {
 	public void run() {
 
 		for (int i = 0; i < 50; i++) {
-			System.out.println("生产一个对象 ： " + i);
+			Dog dog = Dog.builder()
+					.name(UUID.randomUUID().toString())
+					.age(new SplittableRandom().nextInt(60))
+					.build();
+			System.out.println("生产一个对象 ： " + dog.toString());
 			try {
-				queue.put(i);
+				queue.put(dog);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -46,9 +57,9 @@ class Produce implements Runnable {
  * 一个线程消费对象
  */
 class Consumer implements Runnable {
-	BlockingQueue<Integer> queue = null;
+	BlockingQueue<Dog> queue = null;
 
-	public Consumer(BlockingQueue<Integer> queue) {
+	public Consumer(BlockingQueue<Dog> queue) {
 		this.queue = queue;
 	}
 
@@ -62,4 +73,13 @@ class Consumer implements Runnable {
 			}
 		}
 	}
+}
+
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
+class Dog {
+	private String name;
+	private int age;
 }

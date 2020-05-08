@@ -50,4 +50,8 @@ public class CollectorDemo {
 		end2 = System.currentTimeMillis();
 		System.out.println("ArrayList查询第120000万数据耗时：" + (end2 - end));
 	}
+
+	public void arraydemo(){
+		ArrayList<String> arrayList = new ArrayList<>();
+	}
 }
