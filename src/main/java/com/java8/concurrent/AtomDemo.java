@@ -14,6 +14,42 @@ import java.util.stream.IntStream;
  */
 public class AtomDemo {
 	
+	@Test
+	public void testAtomicIntegerDemo() {
+		AtomicInteger atomicInteger = new AtomicInteger(0);
+		
+		// 原子增加一个当前值,也就是增加1，返回的是旧值
+		System.out.println(atomicInteger.getAndIncrement());
+		// 得到原子的当前的值
+		System.out.println(atomicInteger.get());
+		// 原子增加一个当前值，也就是1，返回的是增加以后的值
+		System.out.println(atomicInteger.incrementAndGet());
+		// 把原子的值设置为给定的新值
+		atomicInteger.set(10000);
+		System.out.println(atomicInteger.get());
+		// 把原子的值设置为给定的新值，并返回旧值
+		System.out.println(atomicInteger.getAndSet(5000));
+		System.out.println(atomicInteger.get());
+		// 如果当前的值等于预期的值，则将该原子的值设置为指定的更新的值
+		boolean b = atomicInteger.compareAndSet(5000, 6000);
+		System.out.println(b);
+		System.out.println(atomicInteger.get());
+		// 在原子上减少一个当前值，也就是减少1，返回的是旧值
+		System.out.println(atomicInteger.getAndDecrement());
+		System.out.println(atomicInteger.get());
+		// 在原子上减少一个当前值，也就是减少1，返回的是新值
+		System.out.println(atomicInteger.decrementAndGet());
+		// 将给定的值原子的增加当前值，返回的是旧值
+		// 增加800
+		System.out.println(atomicInteger.getAndAdd(800));
+		System.out.println(atomicInteger.get());
+		// 将给定的值原子的增加当前值，返回的是新值
+		System.out.println(atomicInteger.addAndGet(800));
+		// 不敢原子以前的值是多少，最终把值设定为100
+		atomicInteger.lazySet(100);
+		System.out.println(atomicInteger.get());
+	}
+	
 	/**
 	 * 通过使用AtomicInteger作为替代，Integer我们能够在线程安全的庄园中同时增加数量，而无需同步对变量的访问。
 	 * 该方法incrementAndGet()是一个原子操作，因此我们可以安全地从多个线程调用此方法。
