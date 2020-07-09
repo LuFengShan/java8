@@ -9,7 +9,8 @@ import java.util.concurrent.CyclicBarrier;
 public class CyclicBarrierTest {
     public static void main(String[] args) {
         // 创建具有三个线程的CountDownLatch，当所有3方都达到共同障碍点时，将触发CyclicBarrrierFinishEvent
-        CyclicBarrier cyclicBarrier = new CyclicBarrier(3, new CyclicBarrierFinishEvent());
+//        CyclicBarrier cyclicBarrier = new CyclicBarrier(3, new CyclicBarrierFinishEvent());
+        CyclicBarrier cyclicBarrier = new CyclicBarrier(3);
         // 三个线程
         RunnableTask runnableTask1 = new RunnableTask(cyclicBarrier, 1000L);
         RunnableTask runnableTask2 = new RunnableTask(cyclicBarrier, 2000L);

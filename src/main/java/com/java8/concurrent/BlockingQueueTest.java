@@ -1,26 +1,26 @@
 package com.java8.concurrent;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.SneakyThrows;
 
-import java.util.SplittableRandom;
-import java.util.UUID;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
+import java.time.LocalDateTime;
+import java.util.concurrent.*;
 
 /**
  * 同步并发的操作，主要是在一个线程中放置和获取元素
  */
 public class BlockingQueueTest {
 	public static void main(String[] args) {
-		// 设置一上只能放置10个对象的线程
-		BlockingQueue<Dog> queue = new ArrayBlockingQueue<>(5);
-		Produce produce = new Produce(queue);
-		Consumer consumer = new Consumer(queue);
-		new Thread(consumer).start();
-		new Thread(produce).start();
+		// 设置一次只能放置10个对象的线程
+		BlockingQueue<Integer> queue = new ArrayBlockingQueue<>(10);
+
+//		new Thread(consumer).start();
+//		new Thread(produce).start();
+		ExecutorService service = Executors.newCachedThreadPool();
+		service.submit(new Consumer(queue));
+		for (int i = 0; i < 10; i++) {
+			service.submit(new Produce(queue));
+		}
+		ConcurrentUtils.stop(service);
 	}
 }
 
@@ -28,28 +28,24 @@ public class BlockingQueueTest {
  * 一个线程生产对象
  */
 class Produce implements Runnable {
-	BlockingQueue<Dog> queue = null;
-
-	public Produce(BlockingQueue<Dog> queue) {
+	BlockingQueue<Integer> queue;
+	
+	public Produce(BlockingQueue<Integer> queue) {
 		this.queue = queue;
 	}
-
+	
+	@SneakyThrows
 	@Override
 	public void run() {
-
-		for (int i = 0; i < 50; i++) {
-			Dog dog = Dog.builder()
-					.name(UUID.randomUUID().toString())
-					.age(new SplittableRandom().nextInt(60))
-					.build();
-			System.out.println("生产一个对象 ： " + dog.toString());
-			try {
-				queue.put(dog);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+		
+		while (true) {
+			
+			int i = ThreadLocalRandom.current().nextInt(100);
+			System.out.println("生产一个对象 ： " + i);
+			queue.offer(i);
+//				queue.put(i);
 		}
-
+		
 	}
 }
 
@@ -57,29 +53,22 @@ class Produce implements Runnable {
  * 一个线程消费对象
  */
 class Consumer implements Runnable {
-	BlockingQueue<Dog> queue = null;
-
-	public Consumer(BlockingQueue<Dog> queue) {
+	BlockingQueue<Integer> queue;
+	
+	public Consumer(BlockingQueue<Integer> queue) {
 		this.queue = queue;
 	}
-
+	
+	@SneakyThrows
 	@Override
 	public void run() {
 		while (true) {
 			try {
-				System.out.println("消费一个对象 ： " + queue.take());
+				TimeUnit.SECONDS.sleep(1L);
+				System.out.println("消费一个对象 ： " + LocalDateTime.now() + ":" + queue.take().intValue());
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
 	}
-}
-
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@Data
-class Dog {
-	private String name;
-	private int age;
 }

@@ -118,5 +118,10 @@ public class StringDemo {
 				.collect(Collectors.toList());
 		System.out.println(JSON.toJSONString(collect));
 	}
+	
+	@Test
+	public void testNewString() {
+		String s1 = new String("sgxmmhh");
+	}
 
 }
