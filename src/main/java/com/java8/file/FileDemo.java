@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.*;
@@ -32,7 +33,7 @@ public class FileDemo {
 	public void testListPath() {
 		// Files.list()返回一个指定路径下的所有的文件夹及文件，如指定C盘，则返回C盘下的所的目录，但是不会返回子目录（第二级目录）
 		// 列出了当前工作目录的所有文件 Stream<Path> list = Files.list(Paths.get(""))
-		try (Stream<Path> list = Files.list(Paths.get("d:\\github\\java8"))) {
+		try (Stream<Path> list = Files.list(Paths.get("C:\\Users\\Administrator\\IdeaProjects\\java8\\src"))) {
 			list.map(String::valueOf) // 把Path转换成String字符串
 					.filter(path -> ! path.contains("$")) // 一次函数
 					.sorted()
@@ -52,7 +53,7 @@ public class FileDemo {
 	 */
 	@Test
 	public void listFilesUsingDirectoryStream() throws IOException {
-		String dir = "C:\\Users\\Administrator\\Documents\\异地行驶(2)";
+		String dir = "C:\\Users\\Administrator\\IdeaProjects\\java8\\src";
 		Set<String> fileList = new HashSet<>();
 		List<String> list = new ArrayList<>();
 		try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(dir))) {
@@ -80,7 +81,7 @@ public class FileDemo {
 	@Test
 	public void testFindFileWithFind() {
 		// 1. 指定当前的工作目录
-		Path start = Paths.get("d:/github/java8");
+		Path start = Paths.get("C:\\Users\\Administrator\\IdeaProjects\\java8\\src");
 		// 2. 指定文件层次的深度
 		int maxDepth = 7;
 		try (Stream<Path> stream = Files.find(start, maxDepth, (path, attr) -> String.valueOf(path) // 指定搜索的逻辑算法
@@ -291,7 +292,24 @@ public class FileDemo {
 	 **/
 	@Test
 	public void zhpy() {
-	
+		// 1. 指定当前的工作目录
+		Path start = Paths.get("D:\\BaiduNetdiskDownload\\Python数据分析与大数据处理从入门到精通\\1.案例源码");
+		// 2. 指定文件层次的深度
+		int maxDepth = 7;
+		try (Stream<Path> stream = Files.find(start, maxDepth, (path, attr) -> String.valueOf(path) // 指定搜索的逻辑算法
+				.endsWith(".txt"))) {
+			stream.sorted()
+					.map(String::valueOf)
+					.forEach(item -> {
+						File file = Paths.get(item).toFile();
+						// 新文件的名称
+						item = item.replace(".txt", ".py");
+						file.renameTo(new File(item));
+						System.out.println(item);
+					});
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 }

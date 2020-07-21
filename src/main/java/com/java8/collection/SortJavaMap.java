@@ -77,7 +77,8 @@ public class SortJavaMap {
 
 		final Map<String, Customer> sortedByValues = customerMap.entrySet()
 				.stream()
-				.sorted((e1, e2) -> e2.getValue().compareTo(e1.getValue()))
+//				.sorted((e1, e2) -> e2.getValue().compareTo(e1.getValue()))
+				.sorted((e1, e2) -> e2.getValue().salary - e1.getValue().salary)
 				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
 
 		System.out.println("原始结果 ： " + customerMap);
