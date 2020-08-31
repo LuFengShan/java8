@@ -90,6 +90,17 @@ public class SortJavaMap {
 		// -> {George=[name=Jack, salary=2100], Jack=[name=Jack, salary=4000], Charlie=[name=Jack, salary=4500],
 		// Oliver=[name=Jack, salary=5200], Harry=[name=Jack, salary=5600]}
 	}
+	@Test
+	public void test() {
+		Map<String, Double> map = new HashMap<>();
+		double i = 90.01D;
+		for (char c = 97; c < 104; c++) {
+			map.putIfAbsent(new StringBuilder("level-").append(c).toString(), i);
+		}
+		map.putIfAbsent("level-a", 2000.15);
+		map.putIfAbsent("level-s", 2000.15);
+		map.entrySet().forEach(entry -> System.out.println(entry.getKey() + ":" + entry.getValue()));
+	}
 }
 
 

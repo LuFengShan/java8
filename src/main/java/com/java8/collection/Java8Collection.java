@@ -10,12 +10,13 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
+import java.util.function.ToDoubleFunction;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class Java8Collection {
 	private static List<Person> people;
-	
+
 	@BeforeEach
 	public void before() {
 		people =
@@ -33,7 +34,7 @@ public class Java8Collection {
 						new Person("力", "王", 35)
 				);
 	}
-	
+
 	/**
 	 * GroupingBy收集器用于按某些属性对对象进行分组，并将结果存储在Map实例中。
 	 */
@@ -42,29 +43,29 @@ public class Java8Collection {
 		// 1. 筛选出为不为null的对象
 		List<Person> collect = people.stream().filter(Objects::nonNull).collect(Collectors.toList());
 		//collect.forEach(System.out::println);
-		
+
 		// 2. 根据lastName分组，过虑掉lastName为null的
 		Map<String, List<Person>> collect1 = people.stream()
-				.filter(person -> ! Objects.equals(null, person.getLastName())) // 过虑lastName为null的
+				.filter(person -> !Objects.equals(null, person.getLastName())) // 过虑lastName为null的
 				.collect(Collectors.groupingBy(Person::getLastName));// 分组函数
 		//collect1.entrySet().forEach(System.out::println);
 		Map<String, List<Person>> collect11 = people.stream()
-				.filter(person -> ! Objects.equals(null, person.getLastName())) // 过虑lastName为null的
+				.filter(person -> !Objects.equals(null, person.getLastName())) // 过虑lastName为null的
 				.collect(Collectors.groupingByConcurrent(Person::getLastName));// 分组函数
 		//collect11.entrySet().forEach(System.out::println);
-		
+
 		// 3.根据lastName分组，把组中的firstName用"、"拼接起来
 		Map<String, String> collect2 = people.stream()
-				.filter(person -> ! Objects.equals(null, person.getLastName()))
+				.filter(person -> !Objects.equals(null, person.getLastName()))
 				.collect(Collectors.groupingBy(Person::getLastName
 						, Collectors.mapping(Person::getFirstName, Collectors.joining("、"))
 						)
 				);
 		// collect2.entrySet().forEach(System.out::println);
-		
+
 		// 4.根据lastName分组，把组中的firstName用"、"拼接起来，并在拼接完成的字符串上面加上前后缀
 		Map<String, String> collect3 = people.stream()
-				.filter(person -> ! Objects.equals(null, person.getLastName()))
+				.filter(person -> !Objects.equals(null, person.getLastName()))
 				.collect(Collectors.groupingBy(Person::getLastName
 						, Collectors.mapping(Person::getFirstName
 								, Collectors.joining("、", "firstName: [", "]")
@@ -72,35 +73,35 @@ public class Java8Collection {
 						)
 				);
 		// collect3.entrySet().forEach(System.out::println);
-		
+
 		// 5.根据lastName分组，取出各组中的年龄和
 		Map<String, Integer> collect4 = people.stream()
-				.filter(person -> ! Objects.equals(null, person.getLastName()))
+				.filter(person -> !Objects.equals(null, person.getLastName()))
 				.collect(Collectors.groupingBy(Person::getLastName, Collectors.summingInt(Person::getAge)));
 		collect4.entrySet()
 				.forEach(map -> System.out.println("lastName : " + map.getKey() + ", 年龄和 ： " + map.getValue()));
-		
+
 		// 6.
 		Map<Integer, Set<Person>> ollect5 = people.stream()
 				.collect(Collectors.groupingBy(Person::getAge, Collectors.toSet()));
 		// collect5.entrySet().forEach(System.out::println);
-		
+
 		// 7. 根据lastName分组，取出各组中年龄最大的那个人
 		Map<String, Optional<Person>> collect6 = people.stream()
-				.filter(person -> ! Objects.equals(null, person.getLastName()))
+				.filter(person -> !Objects.equals(null, person.getLastName()))
 				.collect(Collectors.groupingBy(Person::getLastName
 						, Collectors.maxBy(Comparator.comparingInt(Person::getAge))
 						)
 				);
 		// collect6.entrySet().forEach(System.out::println);
-		
+
 		// 8.根据lastName分组，统计各组有多少人
 		Map<String, Long> collect7 = people.stream()
 				.collect(Collectors.groupingBy(Person::getLastName, Collectors.counting()));
 		collect7.entrySet()
 				.forEach(s ->
 						System.out.println("lastName为 " + s.getKey() + " 的人有 " + s.getValue() + " 个"));
-		
+
 		// 8.先根据lastName分组，在把各组中的人员根据年龄分组
 		Map<String, Map<Integer, List<Person>>> collect8 = people.stream()
 				.collect(Collectors.groupingBy(Person::getLastName
@@ -108,16 +109,16 @@ public class Java8Collection {
 						)
 				);
 		collect8.entrySet().forEach(System.out::println);
-		
-		
+
+
 		long sum = people.stream()
 				.mapToLong(Person::getAge)
 				.sum();
 		System.out.println(sum);
-		
-		
+
+
 	}
-	
+
 	@Test
 	public void test6() {
 		List<Person> hahah = people.stream()
@@ -126,11 +127,11 @@ public class Java8Collection {
 					return person;
 				})
 				.collect(Collectors.toList());
-		
+
 		hahah.forEach(System.out::println);
-		
+
 	}
-	
+
 	@Test
 	public void testGroupByLimit() {
 		List<RunNameMonth> list = new ArrayList<>(2000000);
@@ -155,7 +156,7 @@ public class Java8Collection {
 				list.add(new RunNameMonth("2018-09", "比亚迪汽车有限公司9", i * 9.50));
 			}
 		}
-		
+
 		list.parallelStream()
 				.sorted(Comparator.comparingDouble(RunNameMonth::getRunKm).reversed())
 				.collect(Collectors.groupingBy(RunNameMonth::getYearMonth,// 首先根据月份分组
@@ -189,7 +190,7 @@ public class Java8Collection {
 //				.collect(Collectors.toList())
 //				.forEach(System.out::println);
 	}
-	
+
 	/**
 	 * PartitioningBy是groupingBy的一个特殊情况，它接受Predicate实例并将Stream元素收集到Map实例中，该实例将布尔值存储为键，集合作为值存储。
 	 * 在“true”键下，您可以找到与给定谓词匹配的元素集合，
@@ -202,7 +203,7 @@ public class Java8Collection {
 				.collect(Collectors.partitioningBy(person -> Objects.equals(null, person.getLastName())));
 		collect.entrySet().forEach(System.out::println);
 	}
-	
+
 	/**
 	 * 根据lastname分组，求各组中的年龄和
 	 */
@@ -213,7 +214,7 @@ public class Java8Collection {
 				.collect(Collectors.groupingBy(Person::getLastName, Collectors.summingInt(Person::getAge)));
 		collect.entrySet().forEach(System.out::println);
 	}
-	
+
 	@Test
 	public void test1000000Stream() {
 		List<Person> list = new ArrayList<>(10010000);
@@ -226,7 +227,7 @@ public class Java8Collection {
 				.collect(Collectors.counting());
 		System.out.println(LocalTime.now() + " : " + collect);
 	}
-	
+
 	@Test
 	public void test1000000parallelStream() {
 		List<Person> list = new ArrayList<>(10000000);
@@ -239,7 +240,7 @@ public class Java8Collection {
 				.collect(Collectors.counting());
 		System.out.println(LocalTime.now() + " : " + collect);
 	}
-	
+
 	@Test
 	public void test01() {
 		List<OfflineVehicle> list = new ArrayList<>();
@@ -251,7 +252,7 @@ public class Java8Collection {
 		ov.setVehModelName("BJ5022XXYV3R2-BEV");
 		ov.setUnName("北京汽车股份有限公司");
 		list.add(ov);
-		
+
 		ov = supplier.get();
 		ov.setVin("LHB15T3E0JG400661");
 		ov.setLicensePlate("测BD589C");
@@ -280,85 +281,85 @@ public class Java8Collection {
 		ov.setVehModelName("MR7002BEV03");
 		ov.setUnName("浙江吉利汽车有限公司");
 		list.add(ov);
-		
+
 		List<OfflineVehicle> offlineVehicles = list;
-		
+
 		// 1. 返回所有的车牌号
 		List<String> licensePlateCollect = offlineVehicles.parallelStream()
 				.map(OfflineVehicle::getLicensePlate) // 映射出所有的车牌号
 				.distinct()
 				.sorted()
 				.collect(Collectors.toList());
-		
+
 		// 2. 返回所有的车辆类别
 		List<String> typeNameCollect = offlineVehicles.parallelStream()
 				.map(OfflineVehicle::getTypeName) // 映射出所有的车牌号
 				.distinct()
 				.sorted()
 				.collect(Collectors.toList());
-		
+
 		// 3. 返回所有的车辆型号
 		List<String> vehModelNameCollect = offlineVehicles.parallelStream()
 				.map(OfflineVehicle::getVehModelName) // 映射出所有的车牌号
 				.distinct()
 				.sorted()
 				.collect(Collectors.toList());
-		
+
 		// 4. 返回所有的车辆生产企业
 		List<String> unNameCollect = offlineVehicles.parallelStream()
 				.map(OfflineVehicle::getUnName) // 映射出所有的车牌号
 				.distinct()
 				.sorted()
 				.collect(Collectors.toList());
-		
+
 		// 5. 返回所有的车辆运营单位
 		List<String> unitNameCollect = offlineVehicles.parallelStream()
 				.map(OfflineVehicle::getUnitName) // 映射出所有的车牌号
 				.distinct()
 				.sorted()
 				.collect(Collectors.toList());
-		
+
 		Map<String, List<String>> map = new HashMap<>();
 		map.put("licensePlateCollect", licensePlateCollect);
 		map.put("typeNameCollect", typeNameCollect);
 		map.put("vehModelNameCollect", vehModelNameCollect);
 		map.put("unNameCollect", unNameCollect);
 		map.put("unitNameCollect", unitNameCollect);
-		
+
 		String string = JSON.toJSONString(map);
 		System.out.println(string);
-		
+
 		String licensePlate = "BD";
 		String typeName = "型二";
 		String vehModelName = "";
 		String unName = "";
 		String unitName = "";
-		
+
 		List<OfflineVehicle> collect = offlineVehicles.parallelStream()
 				// 过滤 车牌号
 				.filter(offlineVehicle -> {
-					if (! Objects.equals("", licensePlate) && ! offlineVehicle.getLicensePlate().contains(licensePlate)) {
+					if (!Objects.equals("", licensePlate) && !offlineVehicle.getLicensePlate().contains(licensePlate)) {
 						return false;
 					}
-					if (! Objects.equals("", typeName) && ! offlineVehicle.getTypeName().contains(typeName)) {
+					if (!Objects.equals("", typeName) && !offlineVehicle.getTypeName().contains(typeName)) {
 						return false;
 					}
-					if (! Objects.equals("", vehModelName) && ! offlineVehicle.getVehModelName().contains(vehModelName)) {
+					if (!Objects.equals("", vehModelName) && !offlineVehicle.getVehModelName().contains(vehModelName)) {
 						return false;
 					}
-					if (! Objects.equals("", unName) && ! offlineVehicle.getUnName().contains(unName)) {
+					if (!Objects.equals("", unName) && !offlineVehicle.getUnName().contains(unName)) {
 						return false;
 					}
-					if (! Objects.equals("", unitName) && ! offlineVehicle.getUnitName().contains(unitName)) {
+					if (!Objects.equals("", unitName) && !offlineVehicle.getUnitName().contains(unitName)) {
 						return false;
 					}
 					return true;
 				})
 				.collect(Collectors.toList());
 		System.out.println(JSON.toJSONString(collect));
-		
+
 	}
-	
+
 	@Test
 	public void test5() {
 		List<Column> list = new ArrayList<>();
@@ -404,7 +405,7 @@ public class Java8Collection {
 		list.add(column33);
 		list.add(column34);
 		list.add(column35);
-		
+
 		List<KvPojo> collect = list.stream()
 				.collect(Collectors.groupingBy(Column::getColumn1))
 				.entrySet()
@@ -418,7 +419,7 @@ public class Java8Collection {
 					return new KvPojo(k, v);
 				})
 				.collect(Collectors.toList());
-		
+
 		List<Map<String, List<KvPojo>>> mapList = list.stream()
 				.collect(Collectors.groupingBy(Column::getColumn1, Collectors.groupingBy(Column::getColumn2)))
 				.entrySet()
@@ -428,7 +429,7 @@ public class Java8Collection {
 					String k1 = entry.getKey();
 					// 二级分组的数据
 					Map<String, List<Column>> v1 = entry.getValue();
-					
+
 					List<KvPojo> collect1 = v1.entrySet()
 							.stream()
 							.map(entry2 -> {
@@ -440,22 +441,22 @@ public class Java8Collection {
 								return new KvPojo(k2, v2);
 							})
 							.collect(Collectors.toList());
-					
+
 					Map<String, List<KvPojo>> listList = new LinkedHashMap<>();
 					listList.put(k1, collect1);
 					return listList;
 				})
 				.collect(Collectors.toList());
-		
+
 		String s = JSON.toJSONString(mapList);
 		System.out.println(s);
-		
+
 		double sum = list.stream()
 				.mapToDouble(Column::getColumn3)
 				.sum();
 		System.out.println(sum);
 	}
-	
+
 	@Test
 	public void testC() {
 		List<String> listS = new ArrayList<>();
@@ -467,7 +468,7 @@ public class Java8Collection {
 		listS.stream()
 				.sorted(Comparator.comparingInt(r -> Integer.valueOf(r.replace(":", ""))))
 				.forEach(System.out::println);
-		
+
 		listS = new ArrayList<>();
 		listS.add("2019（1-2月）");
 		listS.add("2019（1-3月）");
@@ -475,14 +476,14 @@ public class Java8Collection {
 		listS.add("2019（1-5月）");
 		listS.add("2017");
 		listS.add("2018");
-		
+
 		listS.stream()
 				.sorted()
 				.forEach(System.out::println);
-		
-		
+
+
 	}
-	
+
 	/**
 	 * list通过流转map,如果有相同的映射的话会报错，这时候我们要指定第三方策略
 	 */
@@ -506,7 +507,7 @@ public class Java8Collection {
 				.entrySet()
 				.forEach(System.out::println);
 	}
-	
+
 	@Test
 	public void testMap() {
 		List<Column> list = new ArrayList<>(500);
@@ -797,7 +798,7 @@ public class Java8Collection {
 				.map(column -> column.getColumn2())
 				.distinct()
 				.collect(Collectors.toList());
-		
+
 		// 根据日期分组, 然后把每一天每个省份加氢车辆数做映射
 		Map<String, Map<String, Double>> collect = list.stream()
 				.collect(Collectors.groupingBy(col -> col.getColumn1(), Collectors.toMap(col -> col.getColumn2(), col -> col.getColumn3())));
@@ -828,12 +829,26 @@ public class Java8Collection {
 		map.put("date", date);
 		map.put("province", provinces);
 		map.put("data", data);
-		
+
 		String s = JSON.toJSONString(map);
 		System.out.println(s);
-		
+
+		// 根据一个属性分组，其它属性组成一个集合作为KEY
+		Map<String, List<String>> collect1 = list.stream()
+				.collect(Collectors.groupingBy(Column::getColumn1,
+						Collectors.mapping(Column::getColumn2, Collectors.toList())
+				));
+		collect1.entrySet()
+				.forEach(entry -> System.out.println(entry.getKey() + ":" + entry.getValue()));
+
+		list.parallelStream().forEach(item -> {
+			if (item.getColumn3() > 5.0)
+				return;
+			System.out.println(item);
+		});
+
 	}
-	
+
 	/**
 	 * 根据年月来算出这个月有多少天
 	 *
@@ -846,17 +861,21 @@ public class Java8Collection {
 				.with(TemporalAdjusters.lastDayOfMonth())
 				.getDayOfMonth();
 	}
-	
+
 	@Test
 	public void test() {
 		List<Integer> jobs = new ArrayList<>();
 		jobs.add(10);
-		jobs.add(10);
-		jobs.add(10);
+		jobs.add(11);
+		jobs.add(12);
 		jobs.add(20);
 		jobs.add(30);
-		jobs.add(30);
-		
+		jobs.add(31);
+		jobs.parallelStream().forEach(item -> {
+			if (item > 10) return;
+			System.out.println(item);
+		});
+		System.out.println("-----------------");
 		Map<Integer, Long> collect = jobs.stream()
 				.collect(Collectors.groupingBy(item -> item, Collectors.counting()));
 		int size = jobs.size();
@@ -866,6 +885,22 @@ public class Java8Collection {
 						entry -> (entry.getValue() * 1.00 / jobs.size() * 1.00) * 100));
 		System.out.println(collect);
 		System.out.println(collect1);
+	}
+
+	@Test
+	public void s() {
+		List<Double> list = new ArrayList<>(10);
+		list.add(20.25D);
+		list.add(2.05D);
+//		list.add(10.80D);
+//		list.add(2.2D);
+//		list.add(3.3D);
+		ToDoubleFunction<Double> toDoubleFunction = t -> t * 2.0D;
+		Double collect = list.stream()
+				.collect(Collectors.averagingDouble(toDoubleFunction));
+		System.out.println(collect);
+
+
 	}
 }
 

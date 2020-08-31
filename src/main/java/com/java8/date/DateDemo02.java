@@ -187,12 +187,53 @@ public class DateDemo02 {
 
 	@Test
 	public void demoDateTimeFormatter() {
-		LocalDateTime dateTime = LocalDateTime.now();
+		LocalDateTime dateTime = LocalDateTime.of(2020, 8, 28, 0, 0, 0);
 		String str = dateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+		System.out.println(str);
+		str = dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 		System.out.println(str);
 		str = dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 		System.out.println(str);
 		str = dateTime.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
 		System.out.println(str);
+	}
+
+	@Test
+	public void InstantMapperToLocalDateTime() {
+
+		//Instant:时间戳（以Unix元年：1970年1月1日 00:00:00到某个时间之间的毫秒值）
+		Instant ins = Instant.now(); //默认获取的是UTC时区
+		System.out.println(ins);
+		System.out.println(ins.toEpochMilli()); //ms
+
+		Instant timestamp = Instant.ofEpochMilli(ins.toEpochMilli());
+		ZonedDateTime losAngelesTime = timestamp.atZone(ZoneId.of("Asia/Shanghai"));
+		LocalDateTime localDateTime = losAngelesTime.toLocalDateTime();
+		System.out.println(localDateTime);
+
+
+		timestamp = Instant.ofEpochMilli(1596617648000L);
+		losAngelesTime = timestamp.atZone(ZoneId.of("Asia/Shanghai"));
+		localDateTime = losAngelesTime.toLocalDateTime();
+		String str = localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss"));
+		System.out.println(str);
+
+		// 另一种格式转换方式
+		String inputValue = "2012-08-15T22:56:02.038Z";
+		timestamp = Instant.parse(inputValue);
+		losAngelesTime = timestamp.atZone(ZoneId.of("America/Los_Angeles"));
+		System.out.println(losAngelesTime.toLocalDateTime());
+	}
+
+	@Test
+	public void localtime() {
+		LocalTime localTime = LocalTime.now();
+		LocalTime futureTime = LocalTime.of(18, 0);
+		LocalTime futureTime2 = LocalTime.of(18, 1);
+		System.out.println("localTime:" + localTime);
+		System.out.println("futureTime:" + futureTime);
+		System.out.println(localTime.isBefore(futureTime));
+		System.out.println(localTime.compareTo(futureTime));
+		System.out.println(futureTime2.isAfter(futureTime));
 	}
 }

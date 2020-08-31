@@ -1,9 +1,12 @@
 package com.java8.concurrent;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import lombok.Builder;
+import org.junit.jupiter.api.Test;
+
+import java.time.LocalTime;
+import java.util.*;
 import java.util.concurrent.*;
+import java.util.stream.Collectors;
 
 /**
  * 除了Runnable执行程序支持另一种命名的任务Callable。
@@ -11,14 +14,8 @@ import java.util.concurrent.*;
  */
 public class CallableDemo {
 
-	public static void main(String[] args) throws ExecutionException, InterruptedException, TimeoutException {
-		// testCallable01();
-		// testCallable02();
-//		 testCallableInvokeAll();
-		testCallableInvokeAny();
-	}
-
-	public static void testCallable01() throws ExecutionException, InterruptedException {
+	@Test
+	public void testCallable01() throws ExecutionException, InterruptedException {
 		// 这个lambda表达式定义了一个可调用的函数，它在休眠一秒后返回一个整数
 		Callable<Integer> task = () -> {
 			try {
@@ -48,7 +45,8 @@ public class CallableDemo {
 
 	}
 
-	public static void testCallable02() throws ExecutionException, InterruptedException, TimeoutException {
+	@Test
+	public void testCallable02() throws ExecutionException, InterruptedException, TimeoutException {
 		// 线程执行的内容
 		Callable<String> task = () -> {
 			// 延迟1s
@@ -67,6 +65,49 @@ public class CallableDemo {
 		executorService.shutdown();
 	}
 
+	@Test
+	public void testCallable03() {
+		ExecutorService executorService = Executors.newWorkStealingPool();
+		Map<Integer, TaskCode> map = new ConcurrentHashMap<>();
+		for (int i = 0; i < 50; i++) {
+			map.put(i, TaskCode.builder().code(i).codeString("0").build());
+		}
+		doTask(executorService, map);
+		executorService.shutdown();
+	}
+
+	private void doTask(final ExecutorService executorService, Map<Integer, TaskCode> map) {
+		System.out.println("初始化结果:");
+		map.entrySet().forEach(entry -> System.out.println(entry.getKey() + ":" + entry.getValue().toString()));
+		// 基础执行的服务者
+		map.entrySet().forEach(entry -> {
+			Future<TaskCode> future = executorService.submit(entry::getValue);
+			TaskCode s = null;
+			try {
+				s = future.get(2, TimeUnit.SECONDS);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				e.printStackTrace();
+			} catch (TimeoutException e) {
+				e.printStackTrace();
+			}
+			if (Objects.nonNull(s)) {
+				s.setCodeString("1");
+			}
+		});
+		System.out.println("输出结果:");
+		map.entrySet().forEach(entry -> System.out.println(entry.getKey() + ":" + entry.getValue().toString()));
+		ConcurrentMap<Integer, TaskCode> collect = map.entrySet()
+				.stream()
+				.filter(entry -> Objects.equals("0", entry.getValue().getCodeString()))
+				.collect(Collectors.toConcurrentMap(entry -> entry.getKey(), entry -> entry.getValue()));
+		if (Objects.equals(collect.size(), 0)) {
+			return;
+		}
+		doTask(executorService, collect);
+	}
+
 	/**
 	 * InvokeAll:执行程序使用invokeAll()方法支持一次批量提交多个callables。
 	 * 此方法接受一组可调用对象并返回一个可回调的线程（Callable）列表。
@@ -75,23 +116,48 @@ public class CallableDemo {
 	 * 而不是使用固定大小的线程池ForkJoinPools是为给定的并行度大小创建的，
 	 * 默认情况下是主机CPU的可用核心数。
 	 */
-	public static void testCallableInvokeAll() throws InterruptedException {
+	@Test
+	public void testCallableInvokeAll() throws InterruptedException {
 		// 1.线程服务提供者
 		ExecutorService executor = Executors.newWorkStealingPool();
+		Semaphore semaphore = new Semaphore(1);
+		Callable<String> c1 = () -> {
+			try {
+				semaphore.acquire();
+				ConcurrentUtils.sleep(3);
+				return "任务01";
+			} catch (InterruptedException e) {
+				throw new IllegalStateException(e);
+			} finally {
+				semaphore.release();
+			}
+		};
+		Callable<String> c3 = () -> {
+			try {
+				semaphore.acquire();
+				ConcurrentUtils.sleep(1);
+				return "任务03";
+			} catch (InterruptedException e) {
+				throw new IllegalStateException(e);
+			} finally {
+				semaphore.release();
+			}
+		};
+		Callable<String> c2 = () -> {
+			try {
+				semaphore.acquire();
+				return "任务02";
+			} catch (InterruptedException e) {
+				throw new IllegalStateException(e);
+			} finally {
+				semaphore.release();
+			}
+		};
 		// 2.可回调的线程的列表
-		List<Callable<String>> list = Arrays.asList(
-				() -> {
-					TimeUnit.SECONDS.sleep(3);
-					return "任务01";
-				},
-				() -> "任务02",
-				() -> {
-					TimeUnit.SECONDS.sleep(2);
-					return "任务03";
-				}
-		);
+		List<Callable<String>> list = Arrays.asList(c1, c2, c3);
+		List<Future<String>> futures = executor.invokeAll(list);
 		// 3.批量执行所有的线程
-		executor.invokeAll(list)
+		List<String> collect = executor.invokeAll(list)
 				.stream()
 				.map(future -> {
 					try {
@@ -101,15 +167,16 @@ public class CallableDemo {
 						return "错误结果";
 					}
 				})
-				.forEach(System.out::println);
-
+				.collect(Collectors.toList());
+		collect.forEach(System.out::println);
 	}
 
 	/**
 	 * InvokeAny : 批量提交callables的另一种方法invokeAny()是工作方式略有不同invokeAll()。
 	 * 此方法不会返回将来的对象，而是阻塞，直到第一个callable终止并返回该callable的结果。
 	 */
-	public static void testCallableInvokeAny(){
+	@Test
+	public void testCallableInvokeAny() {
 		List<Callable<String>> listCallable = Arrays.asList(
 				() -> {
 					TimeUnit.SECONDS.sleep(5);
@@ -135,5 +202,36 @@ public class CallableDemo {
 			e.printStackTrace();
 		}
 		service.shutdown();
+	}
+}
+
+@Builder
+class TaskCode {
+	private int code;
+	private String codeString;
+
+	public int getCode() {
+		return code;
+	}
+
+	public void setCode(int code) {
+		this.code = code;
+	}
+
+	public String getCodeString() {
+		return codeString;
+	}
+
+	public void setCodeString(String codeString) {
+		this.codeString = codeString;
+	}
+
+	@Override
+	public String toString() {
+		final StringBuilder sb = new StringBuilder("TaskCode{");
+		sb.append("code=").append(code);
+		sb.append(", codeString='").append(codeString).append('\'');
+		sb.append('}');
+		return sb.toString();
 	}
 }

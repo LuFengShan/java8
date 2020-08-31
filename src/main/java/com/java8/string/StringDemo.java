@@ -40,7 +40,7 @@ public class StringDemo {
 				.distinct()
 				.mapToObj(c -> String.valueOf((char) c))
 				.sorted()
-				.collect(Collectors.joining());
+				.collect(Collectors.joining("、"));
 		System.out.println(collect);
 
 		// 不仅字符串而且正则表达式模式都受益于流。我们可以为任何模式拆分字符串，并创建一个要处理的流，而不是将字符串拆分为每个字符的流

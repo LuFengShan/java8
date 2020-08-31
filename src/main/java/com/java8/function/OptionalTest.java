@@ -65,7 +65,7 @@ public class OptionalTest {
 		// 还接受一个Consumer(消费者) 参数，如果对象不是空的，就对执行传入的 Lambda 表达式：
 		nullPerson1.ifPresent(u -> System.out.println(u.toString())); // 对象为空了，所以不执行lambad
 		lisaPerson.ifPresent(u -> System.out.println(u.toString())); // 对象不为空了，执行lambad
-
+		System.out.println(Optional.ofNullable(null).isPresent());
 	}
 
 	/**

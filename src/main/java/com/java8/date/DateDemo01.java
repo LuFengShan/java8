@@ -162,6 +162,7 @@ public class DateDemo01 {
 		System.out.println(LocalDate.now());
 		System.out.println(LocalDate.now().isAfter(parseDate));
 		System.out.println(LocalDate.now().isBefore(parseDate));
+		System.out.println(LocalDate.now().isEqual(LocalDate.now()));
 	}
 
 
