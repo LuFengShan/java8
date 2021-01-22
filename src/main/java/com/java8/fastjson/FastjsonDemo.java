@@ -40,6 +40,19 @@ public class FastjsonDemo {
 		p1.setLastName("li");
 	}
 
+	@Test
+	public void testObjectMap() {
+		Map<String, Object> map = new HashMap<>();
+		map.put("phone", "582989326");
+		Map<String, String> map1 = new HashMap<>();
+		map1.put("chenghu", "sgx");
+		map1.put("bandName", "wow");
+		String s = JSON.toJSONString(map1);
+		s = s.replace('\"','\'');
+		map.put("spliceMap", s);
+		System.out.println(JSON.toJSONString(map));
+	}
+
 	/**
 	 * 直接把对象序列化成json格式
 	 */
@@ -193,5 +206,10 @@ public class FastjsonDemo {
 			map.put(i + 1, Double.valueOf(abString[i]));
 			System.out.println(JSON.toJSONString(map));
 		}
+	}
+
+	@Test
+	public void sanxian() {
+
 	}
 }

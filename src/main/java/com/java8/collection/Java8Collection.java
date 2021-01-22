@@ -13,6 +13,7 @@ import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class Java8Collection {
 	private static List<Person> people;
@@ -793,6 +794,12 @@ public class Java8Collection {
 		list.add(new Column("31", "辽宁省", 10D));
 		list.add(new Column("31", "河南省", 5D));
 		list.add(new Column("31", "湖北省", 1D));
+
+		ConcurrentHashMap<String, String> collect2 = list.stream()
+				.collect(Collectors.toMap(Column::getColumn2, Column::getColumn1, (o1, o2) -> o1, ConcurrentHashMap::new));
+		collect2.forEach((key, value) -> System.out.println(key + ":" + value));
+
+
 		// 统计出所有的省份
 		List<String> provinces = list.stream()
 				.map(column -> column.getColumn2())
@@ -899,8 +906,21 @@ public class Java8Collection {
 		Double collect = list.stream()
 				.collect(Collectors.averagingDouble(toDoubleFunction));
 		System.out.println(collect);
+		Stream<String> stringStream = Stream.of("one", "two", "three", "four");
+		stringStream.filter(e -> e.length() > 3)
+				.peek(e -> System.out.println("Filtered value: " + e))
+				.map(String::toUpperCase)
+				.peek(e -> System.out.println("Mapped value: " + e))
+				.collect(Collectors.toList());
 
+		List<String> alist = Stream.of("one", "two", "three", "four")
+				.collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+		System.out.println(alist);
+		StringBuilder stringBuilder = Stream.of("one", "two", "three", "four")
+				.collect(StringBuilder::new, StringBuilder::append, StringBuilder::append);
+		System.out.println(stringBuilder);
 
+		System.out.println(13*3600);
 	}
 }
 

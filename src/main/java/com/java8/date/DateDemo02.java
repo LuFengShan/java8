@@ -235,5 +235,9 @@ public class DateDemo02 {
 		System.out.println(localTime.isBefore(futureTime));
 		System.out.println(localTime.compareTo(futureTime));
 		System.out.println(futureTime2.isAfter(futureTime));
+
+		DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		LocalDateTime parse = LocalDateTime.parse("2020-09-17 19:28:46", df);
+		System.out.println(parse);
 	}
 }
