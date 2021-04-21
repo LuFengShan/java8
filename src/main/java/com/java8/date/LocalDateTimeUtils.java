@@ -1,5 +1,7 @@
 package com.java8.date;
 
+import org.junit.jupiter.api.Test;
+
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
@@ -261,8 +263,10 @@ public class LocalDateTimeUtils {
 	/**
 	 * 时间格式化输出
 	 */
-	public static void dateToStr() {
+	@Test
+	public void dateToStr() {
 		LocalDate today = LocalDate.now();
+		System.out.println(today);
 		System.out.println("当前日期：" + today.format(DateTimeFormatter.ofPattern(DATE_PATTERN)));
 		System.out.println();
 

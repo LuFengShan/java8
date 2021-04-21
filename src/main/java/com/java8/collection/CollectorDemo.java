@@ -51,7 +51,19 @@ public class CollectorDemo {
 		System.out.println("ArrayList查询第120000万数据耗时：" + (end2 - end));
 	}
 
+	@Test
 	public void arraydemo(){
-		ArrayList<String> arrayList = new ArrayList<>();
+		List<String> arrayList = new ArrayList<>();
+		arrayList.add("aa");
+		arrayList.add("bb");
+		arrayList.add("cc");
+		arrayList.add("dd");
+		if (arrayList.size()>2) {
+			arrayList = arrayList.subList(0, 2);
+		}
+		for (String s : arrayList) {
+			System.out.println(s);
+		}
 	}
+
 }

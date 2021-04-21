@@ -896,6 +896,8 @@ public class Java8Collection {
 
 	@Test
 	public void s() {
+		String ev = "23.7";
+		System.out.println(Float.valueOf(ev));
 		List<Double> list = new ArrayList<>(10);
 		list.add(20.25D);
 		list.add(2.05D);
