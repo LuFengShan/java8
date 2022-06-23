@@ -4,8 +4,8 @@ import javax.annotation.Generated;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2021-04-08T14:28:39+0800",
-    comments = "version: 1.3.1.Final, compiler: javac, environment: Java 1.8.0_152 (Oracle Corporation)"
+    date = "2022-06-23T16:46:55+0800",
+    comments = "version: 1.3.1.Final, compiler: javac, environment: Java 1.8.0_151 (Oracle Corporation)"
 )
 public class ProductMapperImpl implements ProductMapper {
 
