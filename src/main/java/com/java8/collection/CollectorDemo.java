@@ -3,12 +3,13 @@ package com.java8.collection;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
 
 public class CollectorDemo {
 
 	@Test
-	public void testTreeSet() {
+	public void testTreeSet() throws InterruptedException {
 
 		TreeSet<OfflineVehicle> set = new TreeSet<>(Comparator.comparingInt(o -> o.getVin().hashCode()));
 		long start = System.currentTimeMillis();
@@ -49,6 +50,7 @@ public class CollectorDemo {
 		);
 		end2 = System.currentTimeMillis();
 		System.out.println("ArrayList查询第120000万数据耗时：" + (end2 - end));
+		TimeUnit.SECONDS.sleep(1000L);
 	}
 
 	@Test

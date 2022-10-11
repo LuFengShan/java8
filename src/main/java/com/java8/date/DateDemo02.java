@@ -8,9 +8,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
-import java.util.Date;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 public class DateDemo02 {
 
@@ -227,6 +225,9 @@ public class DateDemo02 {
         timestamp = Instant.parse(inputValue);
         losAngelesTime = timestamp.atZone(ZoneId.of("America/Los_Angeles"));
         System.out.println(losAngelesTime.toLocalDateTime());
+
+
+        System.out.println(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS")));
     }
 
     @Test
@@ -243,6 +244,8 @@ public class DateDemo02 {
         DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime parse = LocalDateTime.parse("2020-09-17 19:28:46", df);
         System.out.println(parse);
+        LocalDateTime startTime = LocalDateTime.of(LocalDate.now().minusDays(7L), LocalTime.MIN);
+        System.out.println(startTime);
     }
 
     @Test
@@ -288,5 +291,15 @@ public class DateDemo02 {
         System.out.println(Objects.equals(0.00F, f));
         System.out.println(Objects.equals(0F, f));
         System.out.println(Objects.equals(0.0F, f));
+
+        LocalDate start = LocalDate.now();
+        LocalDate end = LocalDate.now().plusDays(10);
+        for (int i = 0; i < 10; i ++) {
+
+        }
+        for (LocalDate localDate = start; (localDate.isBefore(end) || localDate.isEqual(end)); localDate = localDate.plusDays(1L)) {
+            System.out.println(localDate);
+        }
+        System.out.println(UUID.randomUUID().toString().replace("-", "").toLowerCase(Locale.ROOT));
     }
 }

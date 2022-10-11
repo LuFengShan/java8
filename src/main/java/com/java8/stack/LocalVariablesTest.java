@@ -73,4 +73,16 @@ public class LocalVariablesTest {
         //System.out.println(num);//错误信息：变量num未进行初始化
     }
 
+    public void add() {
+        int i = 10;
+        i ++;
+
+        int i2 = 10;
+        ++ i2;
+
+        int i3 = i + i2;
+        System.out.println(i3);
+
+    }
+
 }

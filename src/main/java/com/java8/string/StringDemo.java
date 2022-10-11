@@ -1,11 +1,14 @@
 package com.java8.string;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import org.apache.hc.core5.util.TextUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.commons.logging.Logger;
 import org.junit.platform.commons.logging.LoggerFactory;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -14,6 +17,8 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  *
@@ -143,7 +148,7 @@ public class StringDemo {
         String str = "0.3682_1.0588_-0.5869_-0.5473_0.1765_0.3015_-0.434_0.7884_0.4992_0.7487_-0.1397_0.2432_0.9142_-2.2131_1.0858_1.0266_-0.6108_-1.1997_0.9608_-0.3757_1.3428_-0.434_-0.3128_-1.7622_-0.2311_0.3211_0.0986_-1.4138_-1.1983_0.0049_1.4477_-0.2311_0.3794_0.8154_0.6125_-0.822_-0.1374_0.1974_-0.2311_0.3015_-0.0595_-0.1262_-0.9666_-0.8304_-0.8835_0.8933_-0.3113_0.9599_0.4325_-0.5838_-0.2311_1.0649_0.9599_1.4281_-5.2467_-1.258_-0.8356_-0.8565_-0.8835_0.3075_-0.3757_1.5457_0.7884_0.8154_0.6904_0.4409_-0.2978_-0.1262_-0.5202_1.5061_0.8154_0.9016_-1.2393_-0.7119_-0.4423_0.8153_-0.4027_-0.8491_1.3615_0.9329_-0.3696_0.9921_-0.2311_0.4349_-0.634_1.0266_1.1045_-1.0924_1.4281_-0.1532_0.3015_-1.8498_-0.0865_-0.1644_-1.1008_0.96";
         List<String> collect = Pattern.compile("_")
                 .splitAsStream(str)
-                .collect(Collectors.toList());
+                .collect(toList());
         System.out.println(JSON.toJSONString(collect));
     }
 
@@ -154,7 +159,7 @@ public class StringDemo {
                 .peek(e -> System.out.println("Filtered value: " + e))
                 .map(String::toUpperCase)
                 .peek(e -> System.out.println("Mapped value: " + e))
-                .collect(Collectors.toList());
+                .collect(toList());
 
         List<Object> objectList = new ArrayList<>();
         objectList.add("a");
@@ -235,4 +240,86 @@ public class StringDemo {
         return isNum.matches();
     }
 
+
+    @Test
+    public void s() {
+        for (int i = 0; i < 8; i++) {
+            System.out.println(1 << i);
+            System.out.println(6 & (1 << i));
+            System.out.println("-----------");
+        }
+    }
+
+    /**
+     * OAQAAAgAAAAAAAAAAAgAgAAAgEcQAAAA6AcFAAAAgEQAABAoAAAiAAAAEAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAgCAIAAAAAAwAAAAAAAAAAAQAAIAAAAAAQAAAAAAAAAAEAAQAABQAAGFAAAAAASEAFMEGAAACiKgCAKBgAAIAAAAAAAAACAAAAAAAAAAAAAAAAAEAAgAAAACAIAAAQQAEAAAAAAAAAAAAEAABAEAAAAIAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAgAAAAAAAAAAAAAAAACEBAAAAAAAAIAAIAABAigCAAoAAgAAKAAAQAAAAAAAAAgIAAAAAAA
+     */
+    @Test
+    public void b() {
+        String bucketId = "OAQAAAgAAAAAAAAAAAgAgAAAgEcQAAAA6AcFAAAAgEQAABAoAAAiAAAAEAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAgCAIAAAAAAwAAAAAAAAAAAQAAIAAAAAAQAAAAAAAAAAEAAQAABQAAGFAAAAAASEAFMEGAAACiKgCAKBgAAIAAAAAAAAACAAAAAAAAAAAAAAAAAEAAgAAAACAIAAAQQAEAAAAAAAAAAAAEAABAEAAAAIAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAgAAAAAAAAAAAAAAAACEBAAAAAAAAIAAIAABAigCAAoAAgAAKAAAQAAAAAAAAAgIAAAAAAA";
+        byte[] decode = Base64.getDecoder().decode(bucketId);
+        Map<String, Boolean> map = new HashMap<>(16);
+
+        List<Integer> listExpNum = new ArrayList<>(10);
+        for (int idx = 0; idx < decode.length; idx++) {
+            int val = decode[idx];
+            for (int i = 0; i < 8; i++) {
+                int isSet = val & (1 << i);
+                if (!Objects.equals(0, isSet)) {
+                    int index = idx * 8 + i + 1;
+                    listExpNum.add(index);
+                }
+            }
+        }
+
+        BigDecimal bigDecimal = new BigDecimal("0.000000").setScale(8, BigDecimal.ROUND_HALF_UP);
+        System.out.println(bigDecimal.toPlainString());
+        Boolean requestlog = null;
+        System.out.println(requestlog);
+
+        String clusterName = "cluster_fastapp_lf";
+        clusterName.replaceAll("clu", "aaa");
+        String pid = "100129,200025,300014,100130,200026,300015";
+        String sceneName = "pc-818专题选车-推荐列列表(300015),app-818专题新车车优惠-车型列表(100129),m-818专题新车车优惠-车型列表(200025),pc-818专题新车车优惠-车型列表(300014),app-818专题选车-推荐列列表(100130),m-818专题选车-推荐列列表(200026)";
+        List<String> pids = Pattern.compile(",")
+                .splitAsStream(pid)
+                .collect(toList());
+        System.out.println(pids);
+        List<String> clusterNames = Pattern.compile(",")
+                .splitAsStream(clusterName)
+                .collect(toList());
+        List<String> sceneNames = Pattern.compile(",")
+                .splitAsStream(sceneName)
+                .collect(toList());
+        System.out.println(sceneNames);
+
+        Map<String, String> pidCluster = new HashMap<>(16);
+        Map<String, String> pidIndexName = new HashMap<>(16);
+        Map<String, String> pidScene = new HashMap<>(16);
+        pids.forEach(p -> {
+            clusterNames.forEach(cn -> pidCluster.put(p, cn));
+            sceneNames.forEach(s -> {
+                System.out.println(s);
+                boolean b = s.endsWith("(" + p + ")");
+                System.out.println(b);
+                if (b) {
+                    pidScene.put(p, s);
+                }
+            });
+        });
+
+        System.out.println(JSON.toJSONString(pidScene, SerializerFeature.PrettyFormat));
+
+        Long aLong = Double.valueOf("1257.0").longValue();
+        System.out.println(aLong);
+
+    }
+
+    @Test
+    public void testCount() {
+        String s = "7dClickRKeyFilter,1dRVRKeyFilter,7dRVRKeyFilter,NegativeFeedbackFilter,1dRVRTypeFilter,ValidRTypeFilter,InvalidRKeyFilter,OutPoolFilter";
+        long count = Pattern.compile(",")
+                .splitAsStream(s)
+                .count();
+        System.out.println(count);
+    }
 }

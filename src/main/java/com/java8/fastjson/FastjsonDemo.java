@@ -89,6 +89,13 @@ public class FastjsonDemo {
         personList.setList(list);
 
         logger.info(() -> JSON.toJSONString(personList)); // {"cone":1001,"list":[["san","zhang"],["si","li"]]}
+
+        JSONObject parEmpty = new JSONObject();
+        parEmpty.put("UserIs24hTo7d", "0:否");
+        parEmpty.put("UserInterestShortSeri", Collections.EMPTY_LIST);
+        parEmpty.put("rtSeries", Collections.EMPTY_LIST);
+        logger.info(() -> parEmpty.toJSONString()); // {"cone":1001,"list":[["san","zhang"],["si","li"]]}
+
     }
 
     @Test

@@ -8,5 +8,8 @@ public class StringAg {
 		String s2 = new String("sunguangxu");
 		System.out.println(s1 == s2);
 		System.out.println(a == b);
+
+		int i = 100 / 10;
+		System.out.println(i);
 	}
 }
