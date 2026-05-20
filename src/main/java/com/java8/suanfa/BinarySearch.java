@@ -3,7 +3,7 @@ package com.java8.suanfa;
 import org.junit.jupiter.api.Test;
 
 /**
- * 十分查找算法
+ * 二分查找算法
  * 1. 前提是待查找的数据已经是排序过了
  */
 public class BinarySearch {

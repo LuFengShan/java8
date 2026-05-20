@@ -1,5 +1,8 @@
 package com.java8.file;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import org.junit.jupiter.api.Test;
 
 import java.io.BufferedReader;
@@ -7,13 +10,12 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.util.*;
 import java.util.function.BiPredicate;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 /**
  * 用Java列出目录中的文件
  */
@@ -303,22 +305,6 @@ public class FileDemo {
 	}
 
 	@Test
-	public void test23() {
-		String str = "{15613},";
-		String substring = str.substring(0, str.length() - 1);
-		System.out.println(substring);
-	}
-
-	/**
-	 * 这个女人真讨厌，专业给我找活
-	 *
-	 * @return
-	 * @Author sgx
-	 * @Param
-	 * @Date 2020/1/15
-	 * @version V1.1.0
-	 **/
-	@Test
 	public void zhpy() {
 		// 1. 指定当前的工作目录
 		Path start = Paths.get("D:\\BaiduNetdiskDownload\\Python数据分析与大数据处理从入门到精通\\1.案例源码");
@@ -339,5 +325,21 @@ public class FileDemo {
 			e.printStackTrace();
 		}
 	}
+
+
+
+    @Test
+    public void readSearchRule() {
+        try (Stream<String> stream = Files.lines(Paths.get("/Users/sunguangxu/a_doc/autohome-doc/搜索/base_rule.txt"))) {
+            LinkedHashSet<String> collect = stream.filter(item -> !item.startsWith("#"))
+                    .filter(item -> !item.trim().isEmpty())
+                    .map(item -> item.replace(" ", ""))
+                    .collect(Collectors.toCollection(LinkedHashSet::new));
+            // 打印
+            collect.forEach(System.out::println);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 }

@@ -1,14 +1,15 @@
 package com.java8.string;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONException;
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import org.apache.hc.core5.util.TextUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.commons.logging.Logger;
 import org.junit.platform.commons.logging.LoggerFactory;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -255,7 +256,7 @@ public class StringDemo {
      */
     @Test
     public void b() {
-        String bucketId = "OAQAAAgAAAAAAAAAAAgAgAAAgEcQAAAA6AcFAAAAgEQAABAoAAAiAAAAEAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAgCAIAAAAAAwAAAAAAAAAAAQAAIAAAAAAQAAAAAAAAAAEAAQAABQAAGFAAAAAASEAFMEGAAACiKgCAKBgAAIAAAAAAAAACAAAAAAAAAAAAAAAAAEAAgAAAACAIAAAQQAEAAAAAAAAAAAAEAABAEAAAAIAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAgAAAAAAAAAAAAAAAACEBAAAAAAAAIAAIAABAigCAAoAAgAAKAAAQAAAAAAAAAgIAAAAAAA";
+        String bucketId = "OAQAAAgAAAAAAAAAAAgAgAAAgEcQAAAA6AcFAAAAgEQAABAoAAAiAAAAEAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAgCAIAAAAAAwAAAAAAAAAAAQAAIAAAAAAQAAAAAAAAAAEAAQAABQAAGFAAAAAASEAFMEGAAACiKgCAKBgAAIAAAAAAAAACAAAAAAAAAAAAAAAAAEAAgEAAACAAAAAAQAEAAAAAAAAAAAAEAAAAAAAAAIAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAGAAAAoAAgAAIAAAQAAAAAAAAAAIAAQBAQAEAAARAAABAAAABQQAAAACAAAIQAgAAACAAAAAAAAAEAAIABABAQAgAIESQCAAAAUAAAAAAABAAAAABAAFAEBQAAQBASCAgCAAQoAAAAEgAAAAA==";
         byte[] decode = Base64.getDecoder().decode(bucketId);
         Map<String, Boolean> map = new HashMap<>(16);
 
@@ -270,56 +271,232 @@ public class StringDemo {
                 }
             }
         }
-
-        BigDecimal bigDecimal = new BigDecimal("0.000000").setScale(8, BigDecimal.ROUND_HALF_UP);
-        System.out.println(bigDecimal.toPlainString());
-        Boolean requestlog = null;
-        System.out.println(requestlog);
-
-        String clusterName = "cluster_fastapp_lf";
-        clusterName.replaceAll("clu", "aaa");
-        String pid = "100129,200025,300014,100130,200026,300015";
-        String sceneName = "pc-818专题选车-推荐列列表(300015),app-818专题新车车优惠-车型列表(100129),m-818专题新车车优惠-车型列表(200025),pc-818专题新车车优惠-车型列表(300014),app-818专题选车-推荐列列表(100130),m-818专题选车-推荐列列表(200026)";
-        List<String> pids = Pattern.compile(",")
-                .splitAsStream(pid)
-                .collect(toList());
-        System.out.println(pids);
-        List<String> clusterNames = Pattern.compile(",")
-                .splitAsStream(clusterName)
-                .collect(toList());
-        List<String> sceneNames = Pattern.compile(",")
-                .splitAsStream(sceneName)
-                .collect(toList());
-        System.out.println(sceneNames);
-
-        Map<String, String> pidCluster = new HashMap<>(16);
-        Map<String, String> pidIndexName = new HashMap<>(16);
-        Map<String, String> pidScene = new HashMap<>(16);
-        pids.forEach(p -> {
-            clusterNames.forEach(cn -> pidCluster.put(p, cn));
-            sceneNames.forEach(s -> {
-                System.out.println(s);
-                boolean b = s.endsWith("(" + p + ")");
-                System.out.println(b);
-                if (b) {
-                    pidScene.put(p, s);
-                }
-            });
-        });
-
-        System.out.println(JSON.toJSONString(pidScene, SerializerFeature.PrettyFormat));
-
-        Long aLong = Double.valueOf("1257.0").longValue();
-        System.out.println(aLong);
+        System.out.println(listExpNum);
 
     }
 
     @Test
     public void testCount() {
-        String s = "7dClickRKeyFilter,1dRVRKeyFilter,7dRVRKeyFilter,NegativeFeedbackFilter,1dRVRTypeFilter,ValidRTypeFilter,InvalidRKeyFilter,OutPoolFilter";
-        long count = Pattern.compile(",")
-                .splitAsStream(s)
-                .count();
-        System.out.println(count);
+        String itemKey = "";
+        List<Map<String, Object>> collect = Pattern.compile(",")
+                .splitAsStream(itemKey)
+                .map(s -> {
+                    String[] split = s.split("-");
+
+                    Map<String, Object> jsonObject = new LinkedHashMap<>(8);
+
+                    JSONArray content = new JSONArray();
+                    JSONObject contentItem = new JSONObject();
+                    contentItem.put("contentId", split[0]);
+                    content.add(contentItem);
+
+                    JSONArray tag = new JSONArray();
+                    JSONObject tagItem = new JSONObject();
+                    tagItem.put("name", "biz_id");
+                    tagItem.put("value", split[1]);
+                    tag.add(tagItem);
+
+                    JSONObject timeRange = new JSONObject();
+                    timeRange.put("startTime", "2000-01-01 00:00:00");
+                    timeRange.put("endTime", "9999-12-31 23:59:59");
+
+                    jsonObject.put("content", content);
+                    jsonObject.put("tag", tag);
+                    jsonObject.put("timeRange", timeRange);
+
+                    return jsonObject;
+                })
+                .peek(System.out::println)
+                .collect(toList());
+        System.out.println(JSON.toJSONString(collect, SerializerFeature.DisableCircularReferenceDetect));
+        String key = "_";
+        String[] s = key.split("_");
+        System.out.println(s.length);
+    }
+
+    public static final List<String> OGC = Arrays.asList("610009", "1", "3", "610102", "700112", "610048", "610103", "700116", "610049", "700117", "26", "39", "700129", "64", "6", "59");
+    public static final List<String> PGC = Arrays.asList("610073", "610074", "14", "93", "206", "610050", "13", "82", "12");
+    public static final List<String> UGC = Arrays.asList("63", "36", "73", "94", "610110", "74", "86", "700186", "700139", "202", "11", "43", "81", "5", "610089", "66", "700044", "700014", "610066", "700088", "700169", "700136");
+
+    @Test
+    public void linshi() {
+        String col = "name";
+        String opt = "like";
+        String value = "hehe";
+
+        System.out.println(String.format("a.%s %s '%%%s%%'", col, opt, value));
+        System.out.println(String.format("%s ('%s', a.col)", opt, value, col));
+
+        // 获取今天的分区 p20250222
+        String partitionName = String.format("p%s", LocalDate.now().plusDays(1L).format(DateTimeFormatter.ofPattern("yyyyMMdd")));
+        System.out.println(partitionName);
+
+    }
+
+    public boolean isAllDigits(String str) {
+        if (str == null) {
+            return false;
+        }
+        // 使用正则表达式校验字符串是否全为数字
+        return str.matches("\\d+");
+    }
+
+    @Test
+    public void akdkd() {
+        String s1 = "{\"content\":[[{\"label\":\"biz_type\",\"value\":\"14\"},{\"label\":\"publish_time\",\"startTime\":\"2024-06-27 00:00:00\",\"endTime\":\"2024-06-27 00:00:00\"}],[]]}";
+
+        JSONObject object = JSON.parseObject(s1);
+        JSONArray content = object.getJSONArray("content");
+        for (int i = 0; i < content.size(); i++) {
+            JSONArray jsonArray = content.getJSONArray(i);
+            long count = jsonArray.stream()
+                    .map(index -> (JSONObject) index)
+                    .map(o -> o.getString("label"))
+                    .filter(s -> Objects.equals(s, "biz_type"))
+                    .count();
+            System.out.println(Objects.equals(count, 0L));
+            System.out.println(String.format("%d,%d, 数组长度：%d", i, count, jsonArray.size()));
+        }
+    }
+
+    @Test
+    public void akdkd2() {
+        String jsonString = "{\n" +
+                "    \"pidConfig\": {\n" +
+                "        \"sceneName\": \"sgxtest1\",\n" +
+                "        \"productId\": \"106\",\n" +
+                "        \"productName\": \"经销商\",\n" +
+                "        \"businessDocker\": \"sunguangxu\",\n" +
+                "        \"description\": \"sgxtest1\",\n" +
+                "        \"applicationId\": \"1\",\n" +
+                "        \"terminalId\": \"1\",\n" +
+                "        \"systemId\": \"2\",\n" +
+                "        \"subjectFirstId\": \"4\",\n" +
+                "        \"subjectFirstName\": \"经销商(4)\",\n" +
+                "        \"subjectSecondId\": \"897\",\n" +
+                "        \"subjectSecondName\": \"智能展厅(897)\",\n" +
+                "        \"subjectThirdId\": \"10642\",\n" +
+                "        \"subjectThirdName\": \"聚合专题-促销活动页(10642)\",\n" +
+                "        \"scenePage\": \"sssssss\",\n" +
+                "        \"sceneModule\": \"\",\n" +
+                "        \"sceneType\": \"\",\n" +
+                "        \"sceneGenre\": \"1\",\n" +
+                "        \"sketchPic\": \"\"\n" +
+                "    },\n" +
+                "    \"indexConfig\": {\n" +
+                "        \"type\": \"copy\",\n" +
+                "        \"index_id\": 106\n" +
+                "    },\n" +
+                "    \"recModelConfig\": {\n" +
+                "        \"model\": \"autohmpg2\"\n" +
+                "    },\n" +
+                "    \"recallConfig\": {\n" +
+                "        \"maxLen\": \"\",\n" +
+                "        \"minLen\": \"\",\n" +
+                "        \"groupCardType\": 0,\n" +
+                "        \"config\": \"{\\\"fastindexField\\\":[{\\\"name\\\":\\\"orderSer\\\",\\\"value\\\":\\\"1\\\"},{\\\"name\\\":\\\"orderAuthor\\\",\\\"value\\\":\\\"2\\\"},{\\\"name\\\":\\\"orderBrand\\\",\\\"value\\\":\\\"3\\\"}],\\\"fastindexFieldiNum\\\":[{\\\"name\\\":\\\"orderAuthor\\\",\\\"value\\\":\\\"4\\\"}],\\\"notConsiderNum\\\":[{\\\"name\\\":\\\"orderSer\\\"},{\\\"name\\\":\\\"orderBrand\\\"}],\\\"sortway\\\":\\\"1\\\",\\\"priority\\\":\\\"5\\\",\\\"neednum\\\":\\\"6\\\",\\\"agee\\\":\\\"1\\\",\\\"delfilters\\\":[{\\\"name\\\":\\\"7dClickRKeyFilter\\\"}],\\\"expcheck\\\":\\\"123\\\",\\\"expcheckNotDo\\\":\\\"456\\\",\\\"notCheckRepeat\\\":\\\"1\\\",\\\"isbizrank\\\":\\\"0\\\",\\\"cond\\\":\\\"用车\\\",\\\"matchUser\\\":[\\\"2\\\",\\\"1\\\"],\\\"idx\\\":\\\"total\\\"}\",\n" +
+                "        \"recallType\": 1,\n" +
+                "        \"userTag\": \"user_cps_popwindow_intention\",\n" +
+                "        \"tagDescription\": \"用户画像说明\"\n" +
+                "    },\n" +
+                "    \"exposureFilter\": {\n" +
+                "        \"config\": \"{\\\"showPrescription\\\":\\\"20\\\",\\\"pname\\\":\\\"kkk\\\",\\\"pid\\\":\\\"90100226\\\",\\\"timePvExpire\\\":\\\"2\\\",\\\"showUpperLimit\\\":\\\"100\\\",\\\"bigBiztype\\\":\\\"\\\",\\\"foreignMedia\\\":[{\\\"pid\\\":\\\"90100226\\\",\\\"foreignMedia\\\":\\\"1,2\\\"}],\\\"showRedisPrefix\\\":\\\"\\\",\\\"usePortrait\\\":\\\"\\\",\\\"ecommerce\\\":[{\\\"pid\\\":\\\"90100226\\\",\\\"isTrue\\\":\\\"\\\"}],\\\"nlpBiztype\\\":\\\"\\\",\\\"operation\\\":[{\\\"pid\\\":\\\"90100226\\\",\\\"isTrue\\\":\\\"\\\"}],\\\"timePv\\\":\\\"\\\"}\"\n" +
+                "    },\n" +
+                "    \"strategyConfig\": {\n" +
+                "        \"file\": [\n" +
+                "        ],\n" +
+                "        \"strategyName\": \"kkk\",\n" +
+                "        \"date\": [\n" +
+                "        ],\n" +
+                "        \"dateTime\": \"2024-07-18 00:00:00\",\n" +
+                "        \"dateType\": true,\n" +
+                "        \"type\": 1,\n" +
+                "        \"weightType\": 1,\n" +
+                "        \"weightWay\": 1,\n" +
+                "        \"contentWeightList\": [\n" +
+                "            {\n" +
+                "                \"flag\": true,\n" +
+                "                \"productId\": \"10002\",\n" +
+                "                \"productTypeId\": \"1027\",\n" +
+                "                \"productTypeList\": [\n" +
+                "                    {\n" +
+                "                        \"productTypeId\": \"1027\",\n" +
+                "                        \"productTypeName\": \"品牌\"\n" +
+                "                    }\n" +
+                "                ],\n" +
+                "                \"contentId\": 70028,\n" +
+                "                \"contentList\": [\n" +
+                "                    {\n" +
+                "                        \"bizType\": 70024,\n" +
+                "                        \"contentName\": \"品牌-现代\"\n" +
+                "                    }\n" +
+                "                ],\n" +
+                "                \"planTypeId\": \"886\",\n" +
+                "                \"planTypeName\": \"Symbol\",\n" +
+                "                \"planTypeList\": [\n" +
+                "                    {\n" +
+                "                        \"id\": \"415\",\n" +
+                "                        \"name\": \"Cayman\"\n" +
+                "                    },\n" +
+                "                    {\n" +
+                "                        \"id\": \"551\",\n" +
+                "                        \"name\": \"GranTurismo\"\n" +
+                "                    },\n" +
+                "                    {\n" +
+                "                        \"id\": \"7754\",\n" +
+                "                        \"name\": \"摩根Midsummer\"\n" +
+                "                    }\n" +
+                "                ],\n" +
+                "                \"planWeight\": 1.1,\n" +
+                "                \"avgValue\": null\n" +
+                "            }\n" +
+                "        ],\n" +
+                "        \"planStartTime\": \"2024-07-18 00:00:00\",\n" +
+                "        \"planEndTime\": \"\",\n" +
+                "        \"strategyType\": 1,\n" +
+                "        \"planType\": 1,\n" +
+                "        \"strategyInfos\": [\n" +
+                "            {\n" +
+                "                \"productId\": \"10002\",\n" +
+                "                \"productTypeId\": \"1027\",\n" +
+                "                \"contentId\": 70028,\n" +
+                "                \"planTypeId\": \"886\",\n" +
+                "                \"planTypeName\": \"Symbol\",\n" +
+                "                \"planWeight\": 1.1\n" +
+                "            }\n" +
+                "        ]\n" +
+                "    },\n" +
+                "    \"scatterConfig\": {\n" +
+                "        \"groupName\": \"dasan\",\n" +
+                "        \"featureType\": \"3\",\n" +
+                "        \"conditionType\": 2,\n" +
+                "        \"featureValueList\": [\n" +
+                "            {\n" +
+                "                \"val\": 0,\n" +
+                "                \"valName\": \"全部\",\n" +
+                "                \"ext1\": \"\",\n" +
+                "                \"ext1Name\": \"\",\n" +
+                "                \"ext2\": \"\",\n" +
+                "                \"ext2Name\": \"\"\n" +
+                "            }\n" +
+                "        ],\n" +
+                "        \"lcV1\": 0,\n" +
+                "        \"lcV2\": 0,\n" +
+                "        \"lcV3\": 0,\n" +
+                "        \"lcV4\": 0,\n" +
+                "        \"lcV5\": 0,\n" +
+                "        \"lcV6\": 0,\n" +
+                "        \"dsV2\": 0\n" +
+                "    }\n" +
+                "}\n";
+
+
+        System.out.println(jsonString);
+        try {
+            JSONObject jsonObject = JSON.parseObject(jsonString);
+        } catch (JSONException e) {
+            System.out.println("Error parsing JSON: " + e.getMessage());
+        }
+
     }
 }

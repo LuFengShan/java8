@@ -1,4 +1,4 @@
-package com.java8.mianshi;
+package com.java8.sf;
 
 import org.junit.jupiter.api.Test;
 

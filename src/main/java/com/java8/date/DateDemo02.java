@@ -294,7 +294,7 @@ public class DateDemo02 {
 
         LocalDate start = LocalDate.now();
         LocalDate end = LocalDate.now().plusDays(10);
-        for (int i = 0; i < 10; i ++) {
+        for (int i = 0; i < 10; i++) {
 
         }
         for (LocalDate localDate = start; (localDate.isBefore(end) || localDate.isEqual(end)); localDate = localDate.plusDays(1L)) {
@@ -302,4 +302,11 @@ public class DateDemo02 {
         }
         System.out.println(UUID.randomUUID().toString().replace("-", "").toLowerCase(Locale.ROOT));
     }
+
+    @Test
+    public void formatDate() {
+        String format = String.format("事件【%s】曝光量达到10W，CTR:%.2f%%", "sada", 6.868686D);
+        System.out.println(format);
+    }
+
 }

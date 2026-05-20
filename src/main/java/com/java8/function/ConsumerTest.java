@@ -2,7 +2,10 @@ package com.java8.function;
 
 import org.junit.jupiter.api.Test;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -17,35 +20,47 @@ import java.util.function.Consumer;
  */
 public class ConsumerTest {
 
-  /** void accept(T t) 对给定的参数执行此操作。 */
-  @Test
-  public void testAccept() {
-    // 1. 给指定字符串增加“!!”
-    Consumer<String> consumer = s -> String.format("%s!!", s);
-    consumer.accept("sgx");
+    /**
+     * void accept(T t) 对给定的参数执行此操作。
+     */
+    @Test
+    public void testAccept() {
+        // 1. 给指定字符串增加“!!”
+        Consumer<String> consumer = s -> String.format("%s!!", s);
+        consumer.accept("sgx");
 
-    Consumer<Person> personConsumer =
-        person -> {
-          if (person.firstName.startsWith("l")) {
-            System.out.println(person.toString());
-          }
-        };
-    List<Person> people =
-        Arrays.asList(
-            new Person("la", "la"),
-            new Person("al", "al"),
-            new Person("bl", "bl"),
-            new Person("lc", "lc"));
-    people.forEach(personConsumer);
-  }
+        Consumer<Person> personConsumer =
+                person -> {
+                    if (person.firstName.startsWith("l")) {
+                        System.out.println(person.toString());
+                    }
+                };
+        List<Person> people =
+                Arrays.asList(
+                        new Person("la", "la"),
+                        new Person("al", "al"),
+                        new Person("bl", "bl"),
+                        new Person("lc", "lc"));
+        people.forEach(personConsumer);
+    }
 
-	@Test
-  public void testAndThen() {
-    // 1. 给指定字符串增加“!!”
-    Consumer<String> consumer = s -> String.format("%s -> ", s);
-    consumer.accept("ahah");
-    // 2. 第一次消费后对元素结果进行的后置的函数
-    Consumer<String> andThen = consumer.andThen(s -> s.substring(0, 2));
-    System.out.println(andThen.toString());
-  }
+    @Test
+    public void testAndThen() throws UnsupportedEncodingException {
+        // 1. 给指定字符串增加“!!”
+        Consumer<String> consumer = s -> String.format("%s -> ", s);
+        consumer.accept("ahah");
+        // 2. 第一次消费后对元素结果进行的后置的函数
+        Consumer<String> andThen = consumer.andThen(s -> s.substring(0, 2));
+        System.out.println(andThen.toString());
+
+
+        byte[] decode = Base64.getDecoder().decode("eyJhbGciOiJIUzUxMiJ9");
+        System.out.println(new String(decode, StandardCharsets.UTF_8));
+
+        byte[] decode1 = Base64.getUrlDecoder().decode("eyJzdWIiOiJzdW5ndWFuZ3h1IiwiZXhwIjoxNzU2MTc1MTQzfQ");
+        System.out.println(new String(decode1, StandardCharsets.UTF_8));
+
+        byte[] decode2 = Base64.getDecoder().decode("273ad258db07c00a5eab973fd76cd08c");
+        System.out.println(new String(decode2, StandardCharsets.UTF_8));
+    }
 }

@@ -3,7 +3,6 @@ package com.java8.concurrent;
 import lombok.Builder;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalTime;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;

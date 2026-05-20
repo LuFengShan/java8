@@ -49,7 +49,8 @@ public class PredicateTest {
 					return false;
 				};
 		// 2. 执行
-		people.forEach(person -> personPredicate.test(person));
+		//people.forEach(person -> personPredicate.test(person));
+		people.stream().filter(personPredicate).forEach(System.out::println);
 	}
 
 	/**
@@ -115,5 +116,9 @@ public class PredicateTest {
 		System.out.println("isEmpty : " + isEmpty.test("lala"));
 		Predicate<String> isEmptynegate = isEmpty.negate();
 		System.out.println("isEmptyNegate : " + isEmptynegate.test("lala"));
+
+		String recallEnName = "aaaaaa-ks";
+		recallEnName = recallEnName.substring(recallEnName.indexOf("-") + 1);
+		System.out.println(recallEnName);
 	}
 }

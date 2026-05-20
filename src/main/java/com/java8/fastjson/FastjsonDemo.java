@@ -254,5 +254,88 @@ public class FastjsonDemo {
 
     }
 
+    @Test
+    public void a() {
+        String config = "{\"rule\":{\"pv\":\"50000\",\"ctr\":\"0.6\"},\"handle\":{\"stop\":false,\"next_plan_id\":10240949,\"next_plan_name\":\"3.30原创焦点图\"},\"content\":[{\"productId\":\"203\",\"productName\":\"资讯部\",\"productTypeId\":\"1001\",\"productTypeName\":\"资讯\",\"contentId\":1,\"contentName\":\"文章\"},{\"productId\":\"203\",\"productName\":\"资讯部\",\"productTypeId\":\"1001\",\"productTypeName\":\"资讯\",\"contentId\":3,\"contentName\":\"视频\"}]}";
+        JSONObject jsonObject = JSON.parseObject(config);
+        // 获取配置
+        JSONObject rule = jsonObject.getJSONObject("rule");
+        // 获取曝光量
+        long pv = rule.getLongValue("pv");
+        // 获取CTR
+        double ctr = rule.getDoubleValue("ctr");
+
+        if (60000 > pv && 0.55 < ctr) {
+            System.out.println("manzh");
+        }
+        // 获取满足规则时的处理方式
+        JSONObject handle = jsonObject.getJSONObject("handle");
+        // 获取满足规则时是不是立即停止物料
+        Boolean stop = handle.getBoolean("stop");
+        JSONArray content = jsonObject.getJSONArray("content");
+
+        Set<String> contentId = Optional.ofNullable(content)
+                .map(objects -> objects.stream()
+                        .map(o -> (JSONObject) o)
+                        .map(c -> c.getString("contentId"))
+                        .collect(Collectors.toSet()))
+                .orElseGet(HashSet::new);
+        System.out.println(contentId);
+        System.out.println(contentId.contains(18));
+        System.out.println(jsonObject.getJSONArray("content111"));
+
+        List<String> list = Arrays.asList("123", "45634", "7892", "abch", "sdfhrthj", "mvkd");
+        list.stream().forEach(e -> {
+            if (e.length() >= 5) {
+                return;
+            }
+            System.out.println(e);
+        });
+    }
+
+    @Test
+    public void b() {
+        String str = "{\n" +
+                "    \"returnObject\": {\n" +
+                "        \"total\": 1,\n" +
+                "        \"rows\": [\n" +
+                "            {\n" +
+                "                \"id\": 101808,\n" +
+                "                \"version\": 2,\n" +
+                "                \"isDelete\": 0,\n" +
+                "                \"createTime\": \"2023-09-15T11:26:57.000+0000\",\n" +
+                "                \"createBy\": \"14283\",\n" +
+                "                \"lastModifyBy\": \"14283\",\n" +
+                "                \"lastModifyTime\": \"2023-09-15T11:27:04.000+0000\",\n" +
+                "                \"formId\": \"YUPAIQ_2023091500003\",\n" +
+                "                \"addApprove\": null,\n" +
+                "                \"publishId\": 15140,\n" +
+                "                \"formDefineId\": 1074,\n" +
+                "                \"instanceId\": 413911,\n" +
+                "                \"fid\": \"21368cc5-5241-48eb-b90f-675a99c5ddd7\",\n" +
+                "                \"data\": \"{\\\"imgUrl\\\":\\\"http://nfiles3three.in.autohome.com.cn/bigdatabdxt-nonposition/2023/08/1692583164939.png\\\",\\\"createTime\\\":\\\"2023-09-15 19:26:56\\\",\\\"comment\\\":\\\"我和我的祖国,一刻也不能分割\\\",\\\"firstStageData\\\":[{\\\"sourcePositionDes\\\":\\\"M-首页-弹窗\\\",\\\"dateNum\\\":2}],\\\"team\\\":\\\"推荐工程团队\\\",\\\"userName\\\":\\\"sunguangxu\\\",\\\"imgUrlComment\\\":\\\"2023-09非商业资源位使用申请位置如下:\\\",\\\"email\\\":\\\"sunguangxu@autohome.com.cn\\\"}\",\n" +
+                "                \"status\": 1,\n" +
+                "                \"publishVersion\": \"11\",\n" +
+                "                \"formName\": \"非商资源位预排期\",\n" +
+                "                \"createByName\": \"孙光旭\",\n" +
+                "                \"formType\": null,\n" +
+                "                \"env\": \"dev\",\n" +
+                "                \"flow_projectcode\": \"BDProject\",\n" +
+                "                \"flow_code\": \"YUPAIQI\",\n" +
+                "                \"identityKey\": null\n" +
+                "            }\n" +
+                "        ]\n" +
+                "    },\n" +
+                "    \"code\": 200,\n" +
+                "    \"status\": 1,\n" +
+                "    \"info\": \"\"\n" +
+                "}";
+
+        JSONObject jsonObject = JSON.parseObject(str).getJSONObject("returnObject").getJSONArray("rows").getJSONObject(0);
+        JSONObject data = jsonObject.getJSONObject("data");
+        System.out.println(data);
+
+        System.out.println(data.getString(null));
+    }
 
 }

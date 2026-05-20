@@ -1,7 +1,6 @@
 package com.java8.concurrent.section1;
 
 import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
 
 public class AppleTree {
 	

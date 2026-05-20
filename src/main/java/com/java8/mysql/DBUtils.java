@@ -1,10 +1,7 @@
 package com.java8.mysql;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.util.Calendar;
 
 /**
  * 开发者 : SGX <BR>
@@ -24,6 +21,10 @@ public class DBUtils {
   private static String password = "root";
 
   public static void main(String[] args) {
+    Calendar calendar = Calendar.getInstance();
+    calendar.add(Calendar.YEAR, -2);
+
+    System.out.println(calendar.getTime());
     Connection conn = null;
     Statement stmt = null;
     ResultSet rs = null;
